@@ -43,6 +43,7 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: FadeTransition(
         opacity: _animation,
+        
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
