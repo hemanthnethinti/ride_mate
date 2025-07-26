@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ride_mate/login_page.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:ride_mate/otp_verification.dart';
+import 'package:ride_mate/splash_screen.dart';
+
 
 void main() {
   runApp(DevicePreview(builder: (context)=>const MyApp()));
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: SplashScreen(),
     );
   }
 }
