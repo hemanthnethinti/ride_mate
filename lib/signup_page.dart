@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:ride_mate/forgot_password.dart';
-import 'package:ride_mate/signup_page.dart';
-import 'package:ride_mate/widgets/custom_test_feild.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ride_mate/login_page.dart';
+import 'package:ride_mate/otp_verification.dart';
+import 'package:ride_mate/terms_conditions.dart';
+import 'package:ride_mate/widgets/custom_test_feild.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
+  final _name = TextEditingController();
   final _email = TextEditingController();
   final _pass = TextEditingController();
+  final _repass = TextEditingController();
   final _key = GlobalKey<FormState>();
+
+  bool isSelected = false;
 
   final List<IconData> iconList = [
     FontAwesomeIcons.google,
@@ -25,23 +30,35 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24), 
+          padding: const EdgeInsets.all(24),
           child: Form(
             key: _key,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  'Login',
+                  'Sign Up',
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 40),
                 CustomTextFeild(
+                  label: 'Full Name',
+                  pIcon: const Icon(Icons.person),
+                  controller: _name,
+                  validate: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+                CustomTextFeild(
                   label: 'Email',
-                  pIcon: const Icon(Icons.mail),
+                  pIcon: const Icon(Icons.email),
                   controller: _email,
                   validate: (value) {
                     if (value == null || value.isEmpty) {
@@ -60,32 +77,87 @@ class _LoginPageState extends State<LoginPage> {
                   isPassword: true,
                   validate: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'Please enter a new password';
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 15),
+                CustomTextFeild(
+                  label: 'Confirm Password',
+                  pIcon: const Icon(Icons.lock),
+                  controller: _repass,
+                  isPassword: true,
+                  validate: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    } else if (_pass.text != _repass.text) {
+                      return "Passwords do not match";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    Checkbox(
+                      value: isSelected,
+                      onChanged: (val) {
+                        setState(() {
+                          isSelected = val!;
+                        });
+                      },
+                    ),
+                    const Text('I agree to the'),
                     InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPassword()));
+                      onTap: () async {
+                        final accepted = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TermsConditions(),
+                          ),
+                        );
+
+                        if (accepted == true) {
+                          setState(() {
+                            isSelected = true;
+                          });
+                        }
                       },
                       child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        ' Terms and Conditions',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
                 ElevatedButton(
                   onPressed: () {
                     if (_key.currentState!.validate()) {
+                      if (!isSelected) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('You must accept Terms and Conditions'),
+                          ),
+                        );
+                        return;
+                      }
+                      debugPrint('Full Name: ${_name.text}');
                       debugPrint('Email: ${_email.text}');
                       debugPrint('Password: ${_pass.text}');
+                      debugPrint('Confirm Password: ${_repass.text}');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const OtpVerification(),
+                        ),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -93,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                     minimumSize: const Size(double.infinity, 60),
                   ),
                   child: const Text(
-                    'Login',
+                    'Sign Up',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
@@ -101,28 +173,28 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account?",
-                        style: TextStyle(color: Colors.black)),
+                    const Text("Already have an account?"),
                     const SizedBox(width: 5),
                     InkWell(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SignupPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
                         );
                       },
                       child: const Text(
-                        'SignUp here',
+                        'Login here',
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(3, (index) {
+                  children: List.generate(iconList.length, (index) {
                     return InkWell(
                       onTap: () {
                         debugPrint('Tapped on ${iconList[index]}');

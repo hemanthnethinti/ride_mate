@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ride_mate/login_page.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:ride_mate/otp_verification.dart';
 
 void main() {
   runApp(DevicePreview(builder: (context)=>const MyApp()));
