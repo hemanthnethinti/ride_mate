@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 
 class CustomTextFeild extends StatefulWidget {
 
-  final String hinttext;
-  final IconData pIcon;
+  
+  final Widget? pIcon;
   final TextEditingController controller;
   final bool isPassword;
   final String? Function(String?)? validate;
+  final String? label;
 
   const CustomTextFeild({
     super.key,
-    required this.hinttext,
-    required this.pIcon,
+    this.pIcon,
     required this.controller,
     this.isPassword = false,
     this.validate,
+    required this.label,
   });
 
   @override
@@ -31,8 +32,8 @@ class _CustomTextFeildState extends State<CustomTextFeild> {
         obscureText: widget.isPassword ? _obscureText : false,
         validator:widget.validate ,
         decoration: InputDecoration(
-          hintText: widget.hinttext,
-          prefixIcon: Icon(widget.pIcon),
+          labelText: widget.label,
+          prefixIcon: widget.pIcon,
           suffixIcon: Visibility(
             visible: widget.isPassword,
             child: IconButton(
@@ -47,7 +48,7 @@ class _CustomTextFeildState extends State<CustomTextFeild> {
             ),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(30),
           ),
         ),
       );
