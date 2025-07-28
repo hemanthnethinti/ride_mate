@@ -5,7 +5,7 @@ import 'package:ride_mate/splash_screen.dart';
 
 
 void main() {
-     runApp(MyApp());
+     runApp(DevicePreview(builder: (context) => MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: SplashScreen(),
     );
   }
 }
