@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ride_mate/wrapper.dart';
 
+<<<<<<< HEAD
 void main() async{
     WidgetsFlutterBinding.ensureInitialized();
     WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,11 @@ void main() async{
      );
   }
      runApp(DevicePreview(builder: (context)=>MyApp()));
+=======
+
+void main() {
+     runApp(DevicePreview(builder: (context) => MyApp()));
+>>>>>>> 2df43d28ec000c2d1fa9b340bf0011ef18f3467d
 }
 
 class MyApp extends StatelessWidget {
