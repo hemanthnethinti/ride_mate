@@ -7,7 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async{
     WidgetsFlutterBinding.ensureInitialized();
     //WidgetsFlutterBinding.ensureInitialized();
-    print("Hemanth");
+    print("Heman");
   if(kIsWeb){
      await Firebase.initializeApp(
       options: const FirebaseOptions (
