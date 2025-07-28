@@ -5,7 +5,7 @@ import 'package:ride_mate/splash_screen.dart';
 
 
 void main() {
-  runApp(DevicePreview(builder: (context)=>const MyApp()));
+     runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

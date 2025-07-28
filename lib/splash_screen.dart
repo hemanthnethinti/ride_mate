@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ride_mate/login_page.dart';
 import 'package:lottie/lottie.dart';
-
+import 'package:google_fonts'
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen>
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.orange, Colors.white],
+              colors: [Color.fromARGB(255, 5, 121, 139), Colors.white],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -63,9 +63,10 @@ class _SplashScreenState extends State<SplashScreen>
                 const Text(
                   'Ride Mate',
                   style: TextStyle(
+                    fontStyle: FontStyle.italic,
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ],
