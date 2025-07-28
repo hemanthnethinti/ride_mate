@@ -28,7 +28,7 @@ class _SignupPageState extends State<SignupPage> {
     FontAwesomeIcons.github,
   ];
   Future<void> reg()async{
-    String _errormess;
+    String errormess;
       setState(() {
         _isloading=true;
       });
@@ -74,7 +74,7 @@ class _SignupPageState extends State<SignupPage> {
         }
 
          setState(() {
-           _errormess=mess;
+           errormess=mess;
          });
          if(mounted){
           ScaffoldMessenger.of(context).showSnackBar(
@@ -86,7 +86,7 @@ class _SignupPageState extends State<SignupPage> {
       }
       catch(e){
         setState(() {
-        _errormess = 'An unexpected error occurred: $e';
+        errormess = 'An unexpected error occurred: $e';
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

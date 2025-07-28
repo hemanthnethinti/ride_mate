@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   //   return await FirebaseAuth.instance.signInWithCredential(credential);
   //  }
    Future<void> login() async{
-    String _errormess;
+    String errormess;
     setState(() {
       _isloading=true;
     });
@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
           break;
       }
       setState(() {
-        _errormess=message;
+        errormess=message;
       });
       if (mounted) { // Only show SnackBar if widget is still mounted
         ScaffoldMessenger.of(context).showSnackBar(
@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
     catch (e) {
       // Catch any other unexpected errors
       setState(() {
-        _errormess = 'An unexpected error occurred: $e';
+        errormess = 'An unexpected error occurred: $e';
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
