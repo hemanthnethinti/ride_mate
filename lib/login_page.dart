@@ -3,7 +3,8 @@ import 'package:ride_mate/forgot_password.dart';
 import 'package:ride_mate/signup_page.dart';
 import 'package:ride_mate/widgets/custom_test_feild.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -15,13 +16,97 @@ class _LoginPageState extends State<LoginPage> {
   final _email = TextEditingController();
   final _pass = TextEditingController();
   final _key = GlobalKey<FormState>();
-
+  bool _isloading=false;
   final List<IconData> iconList = [
     FontAwesomeIcons.google,
     FontAwesomeIcons.facebook,
     FontAwesomeIcons.github,
   ];
+  //  Future<UserCredential?> login() async{
+  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //   final GoogleSignInAuthentication? googleAuth=await googleUser?.authentication;
+  //   final credential=GoogleAuthProvider.credential(
+  //     accessToken: googleAuth?.accessToken,
+  //     idToken: googleAuth?.idToken,
+  //   );
+  //   return await FirebaseAuth.instance.signInWithCredential(credential);
+  //  }
+   Future<void> login() async{
+    String _errormess;
+    setState(() {
+      _isloading=true;
+    });
+    try{
+        UserCredential userCred=
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email.text, password: _pass.text);
+        if(mounted){
+          ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(
+              content: Text('Welcome back, ${userCred.user?.email}'))
+          );
+        }
+    }on FirebaseAuthException catch(e){
+           String message;
+           print(e.code);
+      switch (e.code) {
+        case 'user-not-found':
+          message = 'No user found for that email.';
+          break;
+        case 'wrong-password':
+          message = 'Wrong password provided for that user.';
+          break;
+        case 'invalid-credential':
+          message = 'The email address is not valid.';
+          break;
+        case 'user-disabled':
+          message = 'This user account has been disabled.';
+          break;
+        case 'too-many-requests':
+          message = 'Too many failed login attempts. Please try again later.';
+          break;
+        case 'network-request-failed':
+          message = 'Network error. Please check your internet connection.';
+          break;
+        default:
+          message = 'An unknown error occurred: ${e.message}';
+          break;
+      }
+      setState(() {
+        _errormess=message;
+      });
+      if (mounted) { // Only show SnackBar if widget is still mounted
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+    catch (e) {
+      // Catch any other unexpected errors
+      setState(() {
+        _errormess = 'An unexpected error occurred: $e';
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An unexpected error occurred: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      print("General Error: $e");
 
+    } finally {
+      if (mounted) { // Ensure state is updated only if widget is mounted
+        setState(() {
+          _isloading = false; // Always stop loading, regardless of success or failure
+        });
+      }
+    }
+    print("signin successful");
+   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,13 +171,15 @@ class _LoginPageState extends State<LoginPage> {
                     if (_key.currentState!.validate()) {
                       debugPrint('Email: ${_email.text}');
                       debugPrint('Password: ${_pass.text}');
+                      login();
                     }
-                  },
+                  },             
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0D2B45),
                     minimumSize: const Size(double.infinity, 60),
                   ),
-                  child: const Text(
+                  child: _isloading?CircularProgressIndicator():
+                  const Text(
                     'Login',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
@@ -124,8 +211,9 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(3, (index) {
                     return InkWell(
-                      onTap: () {
-                        debugPrint('Tapped on ${iconList[index]}');
+                      onTap: () async{
+                        login();
+                        
                       },
                       child: Container(
                         height: 50,
@@ -149,3 +237,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+

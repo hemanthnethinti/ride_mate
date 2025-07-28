@@ -4,7 +4,8 @@ import 'package:ride_mate/login_page.dart';
 import 'package:ride_mate/otp_verification.dart';
 import 'package:ride_mate/terms_conditions.dart';
 import 'package:ride_mate/widgets/custom_test_feild.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -20,13 +21,93 @@ class _SignupPageState extends State<SignupPage> {
   final _key = GlobalKey<FormState>();
 
   bool isSelected = false;
-
+  bool _isloading=false;
   final List<IconData> iconList = [
     FontAwesomeIcons.google,
     FontAwesomeIcons.facebook,
     FontAwesomeIcons.github,
   ];
+  Future<void> reg()async{
+    String _errormess;
+      setState(() {
+        _isloading=true;
+      });
+      UserCredential? userCred;
+        try{
+      userCred=await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: _email.text,
+       password: _pass.text);
+        
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Account Created Successfully for ${userCred.user?.email
+             }'
+             ),
+             backgroundColor: Colors.green,
+          )
+        );
+      }
+        
+      }
+      on FirebaseAuthException catch(e){
+        String mess;
+        switch(e.code){
+           case 'weak-password':
+             mess='The password provided is too weak.';
+             break;
+           case 'email-already-in-use':
+             mess='An account already exists for that email.';
+             break;
+           case 'invalid-email':
+             mess = 'The email address is not valid.';
+             break;
+           case 'operation-not-allowed':
+             mess = 'Email/password sign-in is not enabled for this project.';
+             break;
+           case 'network-request-failed':
+             mess = 'Network error. Please check your internet connection.';
+             break;
+           default:
+             mess= 'An unknown error occurred: ${e.message}';
+             break;
+        }
 
+         setState(() {
+           _errormess=mess;
+         });
+         if(mounted){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(mess),
+            backgroundColor: Colors.red,
+            )
+          );
+         }
+      }
+      catch(e){
+        setState(() {
+        _errormess = 'An unexpected error occurred: $e';
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An unexpected error occurred: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      }
+       finally {
+      if (mounted) {
+        setState(() {
+          _isloading = false; // Always stop loading, regardless of success or failure
+        });
+      }
+    }
+     print("SignUp Successful");
+  }
+      
+   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,19 +233,21 @@ class _SignupPageState extends State<SignupPage> {
                       debugPrint('Email: ${_email.text}');
                       debugPrint('Password: ${_pass.text}');
                       debugPrint('Confirm Password: ${_repass.text}');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const OtpVerification(),
-                        ),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const OtpVerification(),
+                      //   ),
+                      // );
+                      reg();
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0D2B45),
                     minimumSize: const Size(double.infinity, 60),
                   ),
-                  child: const Text(
+                  child: _isloading?CircularProgressIndicator():
+                  const Text(
                     'Sign Up',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ride_mate/login_page.dart';
 import 'package:lottie/lottie.dart';
+import 'package:ride_mate/main.dart';
+import 'package:ride_mate/wrapper.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -27,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => LoginPage()),
+        MaterialPageRoute(builder: (_) => Wrapper()),
       );
     });
   }
