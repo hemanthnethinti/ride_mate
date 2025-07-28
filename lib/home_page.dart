@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:ride_mate/find_ride_page.dart';
+import 'package:ride_mate/post_ride_page.dart';
+import 'package:ride_mate/widgets/app_drawer.dart';
 class MyHome extends StatefulWidget {
   const MyHome({super.key});
 
@@ -12,30 +15,22 @@ Future<void> signOut()async{
    await FirebaseAuth.instance.signOut();
 }
 class _MyHomeState extends State<MyHome> {
-  @override
-=======
-import 'package:ride_mate/post_ride_page.dart';
-import 'package:ride_mate/find_ride_page.dart';
-import 'package:ride_mate/widgets/app_drawer.dart'; // Make sure this path is correct
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  @override// Make sure this path is correct
 
   @override
->>>>>>> 2df43d28ec000c2d1fa9b340bf0011ef18f3467d
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const AppDrawer(), // ✅ Add Drawer here
 
       appBar: AppBar(
-<<<<<<< HEAD
-        title: Text('Ride Mate APP!',style: TextStyle(),),
+
+        //title: Text('Ride Mate APP!',style: TextStyle(),),
         actions: [
           ElevatedButton(onPressed: (){
             signOut();
           }, child: Text("signOut"))
         ],
-=======
+
         title: const Text(
           'Ride Mate',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -208,7 +203,6 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
->>>>>>> 2df43d28ec000c2d1fa9b340bf0011ef18f3467d
       ),
     );
   }

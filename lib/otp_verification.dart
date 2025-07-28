@@ -143,7 +143,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   // Navigate to HomePage
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
+                    MaterialPageRoute(builder: (context) => const MyHome()),
                   );
                 }
               },
@@ -163,3 +163,4 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     );
   }
 }
+

@@ -205,7 +205,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.4"
-<<<<<<< HEAD
+  google_fonts:
+    dependency: "direct main"
+    description:
+      name: google_fonts
+      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.1"
   google_identity_services_web:
     dependency: transitive
     description:
@@ -254,16 +261,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.12.4+4"
-=======
-  google_fonts:
-    dependency: "direct main"
-    description:
-      name: google_fonts
-      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.1"
->>>>>>> 2df43d28ec000c2d1fa9b340bf0011ef18f3467d
   http:
     dependency: transitive
     description:

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-<<<<<<< HEAD
 import 'package:ride_mate/main.dart';
 import 'package:ride_mate/wrapper.dart';
 
-=======
->>>>>>> 2df43d28ec000c2d1fa9b340bf0011ef18f3467d
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 

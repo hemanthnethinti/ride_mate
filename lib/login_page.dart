@@ -4,6 +4,7 @@ import 'package:ride_mate/signup_page.dart';
 import 'package:ride_mate/widgets/custom_test_feild.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
 import 'package:google_sign_in/google_sign_in.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
