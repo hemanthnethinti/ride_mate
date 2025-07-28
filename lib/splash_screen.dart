@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:ride_mate/main.dart';
 import 'package:ride_mate/wrapper.dart';
 
 class SplashScreen extends StatefulWidget {
