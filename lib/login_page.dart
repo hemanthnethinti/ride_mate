@@ -1,11 +1,13 @@
+import 'dart:ui_web';
+
 import 'package:flutter/material.dart';
 import 'package:ride_mate/forgot_password.dart';
 import 'package:ride_mate/signup_page.dart';
 import 'package:ride_mate/widgets/custom_test_feild.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuthException;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:ride_mate/wrapper.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -14,6 +16,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  
+
   final _email = TextEditingController();
   final _pass = TextEditingController();
   final _key = GlobalKey<FormState>();
@@ -23,62 +27,87 @@ class _LoginPageState extends State<LoginPage> {
     FontAwesomeIcons.facebook,
     FontAwesomeIcons.github,
   ];
-  //  Future<UserCredential?> login() async{
-  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-  //   final GoogleSignInAuthentication? googleAuth=await googleUser?.authentication;
-  //   final credential=GoogleAuthProvider.credential(
-  //     accessToken: googleAuth?.accessToken,
-  //     idToken: googleAuth?.idToken,
-  //   );
-  //   return await FirebaseAuth.instance.signInWithCredential(credential);
-  //  }
+  UserCredential? User;
+   Future<UserCredential?> signInWithGoogle() async{
+    try {
+      final googleProvider = GoogleAuthProvider();
+      User = await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(
+            content:Text('Welcome back ${User!.user?.email}') )
+        );
+      }
+     
+    } catch (e) {
+      print("Error during Google Sign-In: $e");
+    }
+   }
+
+   Future<UserCredential?> signInWithFacebook() async{
+    try {
+      final googleProvider = FacebookAuthProvider();
+      User = await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(
+            content:Text('Welcome back ${User!.user?.email}') )
+        );
+      }
+     
+    } catch (e) {
+      print("Error during Facebook Sign-In: $e");
+    }
+   }
+
+   Future<UserCredential?> signInWithMicrosoft() async{
+    try {
+      final googleProvider = MicrosoftAuthProvider();
+      User = await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      if(mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(
+            content:Text('Welcome back ${User!.user?.email}') )
+        );
+      }
+     
+    } catch (e) {
+      print("Error during Google Sign-In: $e");
+    }
+   }
+
    Future<void> login() async{
     String errormess;
     setState(() {
       _isloading=true;
     });
     try{
-        UserCredential userCred=
+       final currentUser = FirebaseAuth.instance.currentUser;
+       if(currentUser==null){
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email.text, password: _pass.text);
-        if(mounted){
-          ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(
-              content: Text('Welcome back, ${userCred.user?.email}'))
-          );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login successful'))
+        );
+       }
+       else{
+       await currentUser.reload();
+       if( currentUser.emailVerified){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>Wrapper()));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login successful'))
+        );
+       }
+        else{
+          print('Verify Email');
         }
-    }on FirebaseAuthException catch(e){
-           String message;
-           print(e.code);
-      switch (e.code) {
-        case 'user-not-found':
-          message = 'No user found for that email.';
-          break;
-        case 'wrong-password':
-          message = 'Wrong password provided for that user.';
-          break;
-        case 'invalid-credential':
-          message = 'The email address is not valid.';
-          break;
-        case 'user-disabled':
-          message = 'This user account has been disabled.';
-          break;
-        case 'too-many-requests':
-          message = 'Too many failed login attempts. Please try again later.';
-          break;
-        case 'network-request-failed':
-          message = 'Network error. Please check your internet connection.';
-          break;
-        default:
-          message = 'An unknown error occurred: ${e.message}';
-          break;
-      }
-      setState(() {
-        errormess=message;
-      });
+       }
+        
+    }
+    on FirebaseAuthException catch(e){
       if (mounted) { // Only show SnackBar if widget is still mounted
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(message),
+            content: Text(e.code),
             backgroundColor: Colors.red,
           ),
         );
@@ -86,18 +115,16 @@ class _LoginPageState extends State<LoginPage> {
     }
     catch (e) {
       // Catch any other unexpected errors
-      setState(() {
-        errormess = 'An unexpected error occurred: $e';
-      });
+     
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('An unexpected error occurred: $e'),
+            content: Text('An unexpected error occurred: ${e.toString()}'),
             backgroundColor: Colors.red,
           ),
         );
       }
-      print("General Error: $e");
+      print("General Error: ${e.toString()}");
 
     } finally {
       if (mounted) { // Ensure state is updated only if widget is mounted
@@ -210,13 +237,8 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(3, (index) {
-                    return InkWell(
-                      onTap: () async{
-                        login();
-                        
-                      },
-                      child: Container(
+                  children: [ 
+                    Container(
                         height: 50,
                         width: 50,
                         margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -225,11 +247,38 @@ class _LoginPageState extends State<LoginPage> {
                           border: Border.all(color: Colors.black),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Icon(iconList[index], size: 25),
+                        child: IconButton(onPressed: (){
+                          signInWithGoogle();
+                        }, icon: Icon(iconList[0]))
                       ),
-                    );
-                  }),
-                ),
+                      Container(
+                        height: 50,
+                        width: 50,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: IconButton(onPressed: (){
+                          signInWithFacebook();
+                        }, icon: Icon(iconList[1]))
+                      ),
+                      Container(
+                        height: 50,
+                        width: 50,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: IconButton(onPressed: (){
+                          signInWithMicrosoft();
+                        }, icon: Icon(iconList[2])),
+                      ),
+                    ]
+                  ),
               ],
             ),
           ),
