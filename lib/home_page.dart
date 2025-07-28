@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ride_mate/post_ride_page.dart';
 import 'package:ride_mate/find_ride_page.dart';
+import 'package:ride_mate/widgets/app_drawer.dart'; // Make sure this path is correct
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -8,19 +9,16 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const AppDrawer(), // ✅ Add Drawer here
+
       appBar: AppBar(
-        title: Row(
-          children: [
-            Text(
-              'Ride Mate',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(width: 180),
-            Icon(Icons.account_circle, size: 30),
-          ],
+        title: const Text(
+          'Ride Mate',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.orange,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -47,7 +45,7 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // Offer A Ride section
+            // Offer A Ride & Find A Ride
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -58,20 +56,16 @@ class HomePage extends StatelessWidget {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          color: const Color.fromARGB(255, 255, 255, 255),
+                          color: Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
                               spreadRadius: 2,
                               blurRadius: 6,
-                              offset: Offset(
-                                0,
-                                4,
-                              ), // changes position of shadow
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -94,9 +88,9 @@ class HomePage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            // Icon
+                            // Image
                             Image.network(
-                              "https://www.shutterstock.com/image-vector/happy-couple-young-people-rides-600nw-1619620189.jpg", // Replace with your icon
+                              "https://www.shutterstock.com/image-vector/happy-couple-young-people-rides-600nw-1619620189.jpg",
                               height: 130,
                               width: 130,
                             ),
@@ -120,29 +114,22 @@ class HomePage extends StatelessWidget {
                       ),
                       child: const Text('Offer A Ride'),
                     ),
-
                     const SizedBox(height: 30),
-
-                    // Find A Ride section
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          color: const Color.fromARGB(255, 255, 255, 255),
+                          color: Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
                               spreadRadius: 2,
                               blurRadius: 6,
-                              offset: Offset(
-                                0,
-                                4,
-                              ), // changes position of shadow
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -165,9 +152,9 @@ class HomePage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            // Icon
+                            // Image
                             Image.network(
-                              "https://png.pngtree.com/png-vector/20221129/ourmid/pngtree-illustration-of-a-vector-icon-for-a-ridesharing-app-or-taxi-cab-app-vector-png-image_42258176.jpg", // Replace with your icon
+                              "https://png.pngtree.com/png-vector/20221129/ourmid/pngtree-illustration-of-a-vector-icon-for-a-ridesharing-app-or-taxi-cab-app-vector-png-image_42258176.jpg",
                               height: 150,
                               width: 150,
                             ),

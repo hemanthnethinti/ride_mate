@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:ride_mate/home_page.dart';
 import 'package:ride_mate/splash_screen.dart';
 
 
