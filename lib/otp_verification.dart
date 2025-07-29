@@ -1,7 +1,10 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ride_mate/home_page.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ride_mate/wrapper.dart';
 class OtpVerification extends StatefulWidget {
   const OtpVerification({super.key});
 
@@ -12,6 +15,27 @@ class OtpVerification extends StatefulWidget {
 class _OtpVerificationState extends State<OtpVerification> {
   final _phone = TextEditingController();
   final _key = GlobalKey<FormState>();
+  sendOtp()async{
+     try{
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: '+91${_phone.text}',
+        verificationCompleted: (PhoneAuthCredential cred){}, 
+        verificationFailed: (FirebaseAuthException e){
+
+        }, 
+        codeSent: (String vid,int? token){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpVerificationScreen(vid: vid,)));
+        },
+         codeAutoRetrievalTimeout:(vid){}
+         );
+     }
+     on FirebaseAuthException catch(e){
+      print(e.code);
+     }
+     catch(e){
+      print(e.toString());
+     }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,12 +80,13 @@ class _OtpVerificationState extends State<OtpVerification> {
                 onPressed: () {
                   if (_key.currentState!.validate()) {
                     debugPrint('Phone Number: ${_phone.text}');
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OtpVerificationScreen(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => OtpVerificationScreen(vid: ,),
+                    //   ),
+                    // );
+                    sendOtp();
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -82,7 +107,8 @@ class _OtpVerificationState extends State<OtpVerification> {
 }
 
 class OtpVerificationScreen extends StatefulWidget {
-  const OtpVerificationScreen({super.key});
+  final String vid;
+  const OtpVerificationScreen({super.key,required this.vid});
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -91,6 +117,19 @@ class OtpVerificationScreen extends StatefulWidget {
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final _otp = TextEditingController();
   final _key = GlobalKey<FormState>();
+  signIn()async{
+    PhoneAuthCredential cred=PhoneAuthProvider.credential(
+      verificationId: widget.vid, smsCode: _otp.text);
+    try{
+        await FirebaseAuth.instance.signInWithCredential(cred);
+          await Navigator.push(context,MaterialPageRoute(builder: (context)=>Wrapper()));
+    }on FirebaseAuthException catch(e){
+      print(e.code);
+    }
+    catch(e){
+      print(e.toString());
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,7 +166,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter thr OTP';
-                  } else if (value.length != 4) {
+                  } else if (value.length != 5) {
                     return 'OTP must be exactly 4 digits';
                   }
                   return null;
@@ -141,10 +180,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   debugPrint('OTP: ${_otp.text}');
 
                   // Navigate to HomePage
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyHome()),
-                  );
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => const MyHome()),
+                  // );
+                  signIn();
                 }
               },
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ride_mate/widgets/custom_test_feild.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ride_mate/wrapper.dart';
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
 
@@ -11,6 +12,47 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   final _emailPass = TextEditingController();
     final _key = GlobalKey<FormState>();
+   bool _isloading=false;
+    Future<void> sendLink()async{
+        setState(() {
+          _isloading=true;
+        });
+        try{
+           await  FirebaseAuth.instance.sendPasswordResetEmail(email:_emailPass.text);
+
+           if(mounted){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: 
+              Text('Email was sent successfully(Sometimes it will be in spam folder).'),
+              backgroundColor: Colors.green,
+              )
+            );
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>Wrapper()));
+           }
+        }
+        on FirebaseAuthException catch(e){
+            if(mounted){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content:Text(e.code) ,
+                  backgroundColor: Colors.red,
+                  )
+              );
+            }
+        }catch(e){
+            if(mounted){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content:Text(e.toString()),
+                  backgroundColor: Colors.red,
+                   )
+              );
+            }
+        }
+        setState(() {
+          _isloading=false;
+        });
+    }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,12 +78,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             ElevatedButton(onPressed: (){
                if (_key.currentState!.validate()) {
                       debugPrint('Email/Phone Number: ${_emailPass.text}');
+                      sendLink();
                     }
+               
             },style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0D2B45),
                 minimumSize: const Size(double.infinity, 60),
               ),
-             child: Center(child: Text('Continue',style: TextStyle(color: Colors.white, fontSize: 16),)))
+             child: _isloading?CircularProgressIndicator():
+             Center(child: Text('Continue',style: TextStyle(color: Colors.white, fontSize: 16),)))
           ],
         ),
       ),

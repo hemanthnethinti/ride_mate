@@ -5,7 +5,7 @@ import 'package:ride_mate/otp_verification.dart';
 import 'package:ride_mate/terms_conditions.dart';
 import 'package:ride_mate/widgets/custom_test_feild.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:ride_mate/wrapper.dart';
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -28,7 +28,7 @@ class _SignupPageState extends State<SignupPage> {
     FontAwesomeIcons.github,
   ];
   Future<void> reg()async{
-    String errormess;
+   // String errormess;
       setState(() {
         _isloading=true;
       });
@@ -37,16 +37,21 @@ class _SignupPageState extends State<SignupPage> {
       userCred=await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: _email.text,
        password: _pass.text);
-        
+         if (userCred.user != null && !(userCred.user!.emailVerified))
+           {
+            await userCred.user!.sendEmailVerification();
+           }
+         
       if(mounted){
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Account Created Successfully for ${userCred.user?.email
-             }'
+            content: Text('Verification Link Was Sent to ${userCred.user?.email}(Sometimes it will be in spam folder)'
              ),
              backgroundColor: Colors.green,
           )
+          
         );
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>Wrapper()));
       }
         
       }
@@ -72,10 +77,6 @@ class _SignupPageState extends State<SignupPage> {
              mess= 'An unknown error occurred: ${e.message}';
              break;
         }
-
-         setState(() {
-           errormess=mess;
-         });
          if(mounted){
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(mess),
@@ -86,7 +87,7 @@ class _SignupPageState extends State<SignupPage> {
       }
       catch(e){
         setState(() {
-        errormess = 'An unexpected error occurred: $e';
+       // errormess = 'An unexpected error occurred: $e';
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
