@@ -42,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print("Error during Google Sign-In: $e");
     }
+    return null;
    }
 
    Future<UserCredential?> signInWithFacebook() async{
@@ -58,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print("Error during Facebook Sign-In: $e");
     }
+    return null;
    }
 
    Future<UserCredential?> signInWithMicrosoft() async{
@@ -74,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print("Error during Google Sign-In: $e");
     }
+    return null;
    }
 
    Future<void> login() async{

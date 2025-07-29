@@ -24,11 +24,7 @@ class _MyHomeState extends State<MyHome> {
       appBar: AppBar(
 
         //title: Text('Ride Mate APP!',style: TextStyle(),),
-        actions: [
-          ElevatedButton(onPressed: (){
-            signOut();
-          }, child: Text("signOut"))
-        ],
+        
 
         title: const Text(
           'Ride Mate',

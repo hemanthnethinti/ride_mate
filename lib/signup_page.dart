@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ride_mate/login_page.dart';
+import 'package:ride_mate/otp_verification.dart';
 import 'package:ride_mate/terms_conditions.dart';
 import 'package:ride_mate/widgets/custom_test_feild.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +28,7 @@ class _SignupPageState extends State<SignupPage> {
     FontAwesomeIcons.github,
   ];
   Future<void> reg()async{
-    String errormess;
+   // String errormess;
       setState(() {
         _isloading=true;
       });
@@ -76,10 +77,6 @@ class _SignupPageState extends State<SignupPage> {
              mess= 'An unknown error occurred: ${e.message}';
              break;
         }
-
-         setState(() {
-           errormess=mess;
-         });
          if(mounted){
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(mess),
@@ -90,7 +87,7 @@ class _SignupPageState extends State<SignupPage> {
       }
       catch(e){
         setState(() {
-        errormess = 'An unexpected error occurred: $e';
+       // errormess = 'An unexpected error occurred: $e';
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
