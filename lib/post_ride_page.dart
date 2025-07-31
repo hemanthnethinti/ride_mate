@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ride_mate/view_request_page.dart';
 import 'post_ride_details_page.dart';
 
 class PostRidePage extends StatefulWidget {
@@ -111,8 +112,9 @@ class _PostRidePageState extends State<PostRidePage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text("Map Your Route",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          title: const Text(
+            "Map Your Route",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.orange,
           leading: const BackButton(),
@@ -148,7 +150,7 @@ class _PostRidePageState extends State<PostRidePage> {
                           blurRadius: 4,
                           color: Colors.black12,
                           offset: Offset(0, 3),
-                        )
+                        ),
                       ],
                     ),
                     child: Column(
@@ -194,7 +196,10 @@ class _PostRidePageState extends State<PostRidePage> {
                     ),
                   ],
                   const SizedBox(height: 25),
-                  const Text('Travelling Days', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Travelling Days',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 10),
                   Wrap(
                     spacing: 8,
@@ -224,14 +229,19 @@ class _PostRidePageState extends State<PostRidePage> {
                 child: const Text("Post Ride",style: TextStyle(fontSize: 16,color: Colors.white),),
 
                   const SizedBox(height: 30),
-                  const Text("Charge for the Ride (₹)", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const Text(
+                    "Charge for the Ride (₹)",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: priceController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: "Enter amount",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       prefixIcon: const Icon(Icons.currency_rupee),
                     ),
                   ),
@@ -244,28 +254,63 @@ class _PostRidePageState extends State<PostRidePage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => PostRideDetailsPage(
-                            pickupLocation: pickupController.text,
-                            dropLocation: dropController.text,
-                            startTime: startTime,
-                            endTime: endTime,
-                            returnTime: isTwoWay ? returnTime : null,
-                            selectedDays: selectedDays,
-                            price: priceController.text,
-                            isTwoWay: isTwoWay,
-                          ),
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  PostRideDetailsPage(
+                                    pickupLocation: pickupController.text,
+                                    dropLocation: dropController.text,
+                                    startTime: startTime,
+                                    endTime: endTime,
+                                    returnTime: isTwoWay ? returnTime : null,
+                                    selectedDays: selectedDays,
+                                    price: priceController.text,
+                                    isTwoWay: isTwoWay,
+                                  ),
+                          transitionsBuilder: (
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                          ) {
+                            const begin = Offset(1.0, 0.0); 
+                            const end = Offset.zero;
+                            const curve = Curves.ease;
+
+                            final tween = Tween(
+                              begin: begin,
+                              end: end,
+                            ).chain(CurveTween(curve: curve));
+                            final offsetAnimation = animation.drive(tween);
+
+                            return SlideTransition(
+                              position: offsetAnimation,
+                              child: child,
+                            );
+                          },
                         ),
                       );
                     },
-                    child: const Text("Post Ride",style: TextStyle(color: Colors.black),),
+                    child: const Text(
+                      "Post Ride",
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
-                    style: OutlinedButton.styleFrom(minimumSize: const Size(double.infinity, 50),backgroundColor: Colors.orange),
-                    onPressed: () {},
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      backgroundColor: Colors.orange,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => ViewRequestPage()));
+                    },
                     icon: const Icon(Icons.directions_car),
-                    label: const Text("View Requests",style: TextStyle(color: Colors.black),),
+                    label: const Text(
+                      "View Requests",
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ],
               ),
@@ -277,63 +322,65 @@ class _PostRidePageState extends State<PostRidePage> {
   }
 
   Widget buildLocationRow({
-  required IconData icon,
-  required String label,
-  required TextEditingController controller,
-  required TimeOfDay? time,
-  required VoidCallback onTapTime,
-}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Icon(icon, size: 24),
-          const SizedBox(width: 10),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: label,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    required IconData icon,
+    required String label,
+    required TextEditingController controller,
+    required TimeOfDay? time,
+    required VoidCallback onTapTime,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 24),
+            const SizedBox(width: 10),
+            Expanded(
+              child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: label,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 10),
-          GestureDetector(
-            onTap: onTapTime,
-            child: Text(
-              formatTime(time),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-                fontSize: 15,
+            const SizedBox(width: 10),
+            GestureDetector(
+              onTap: onTapTime,
+              child: Text(
+                formatTime(time),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                  fontSize: 15,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 8),
-      Align(
-        alignment: Alignment.centerLeft,
-        child: TextButton.icon(
-          onPressed: () {
-          },
-          icon: const Icon(Icons.location_on, color: Colors.orange),
-          label: const Text(
-            "Select on Map",
-            style: TextStyle(color: Colors.orange),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.location_on, color: Colors.orange),
+            label: const Text(
+              "Select on Map",
+              style: TextStyle(color: Colors.orange),
+            ),
           ),
         ),
-      ),
-      const SizedBox(height: 8),
-    ],
-  );
-}
-
-
+        const SizedBox(height: 8),
+      ],
+    );
+  }
 
   Widget buildToggle(String title, bool isThisTwoWay) {
     bool isSelected = isTwoWay == isThisTwoWay;
