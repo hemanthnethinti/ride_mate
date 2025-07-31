@@ -5,7 +5,7 @@ class SearchResultsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // In real app, this data comes from Firestore or API
+    
     final rides = [
       {
         'driver': 'Ramesh',
@@ -39,7 +39,7 @@ class SearchResultsPage extends StatelessWidget {
               subtitle: Text('Driver: ${ride['driver']} | Seats: ${ride['seats']}'),
               trailing: Text(ride['price'].toString()),
               onTap: () {
-                // Navigate to Ride Details screen (optional)
+                
               },
             ),
           );

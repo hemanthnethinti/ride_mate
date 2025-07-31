@@ -64,6 +64,51 @@ class _PostRidePageState extends State<PostRidePage> {
           end: Alignment.bottomCenter,
         ),
       ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    buildToggle("One Way", false),
+                    buildToggle("Two Way", true),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const [
+                    BoxShadow(
+                      blurRadius: 4,
+                      color: Colors.black12,
+                      offset: Offset(0, 3),
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    buildLocationRow(
+                      icon: Icons.radio_button_checked,
+                      label: "Pickup Location",
+                      controller: pickupController,
+                      time: startTime,
+                      onTapTime: pickStartTime,
+
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -85,6 +130,7 @@ class _PostRidePageState extends State<PostRidePage> {
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(8),
+
                     ),
                     child: Row(
                       children: [
@@ -160,6 +206,28 @@ class _PostRidePageState extends State<PostRidePage> {
                     runSpacing: 8,
                     children: days.map(buildDayChip).toList(),
                   ),
+
+                  prefixIcon: const Icon(Icons.currency_rupee),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+                onPressed: () {
+                 
+                  print("Pickup: ${pickupController.text}");
+                  print("DropOff: ${dropController.text}");
+                  print("Start Time: ${formatTime(startTime)}");
+                  print("End Time: ${formatTime(endTime)}");
+                  print("Days: $selectedDays");
+                  print("Charge: ₹${priceController.text}");
+                },
+                child: const Text("Post Ride",style: TextStyle(fontSize: 16,color: Colors.white),),
+
                   const SizedBox(height: 30),
                   const Text(
                     "Charge for the Ride (₹)",

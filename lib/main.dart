@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:ride_mate/home_page.dart';
 import 'package:ride_mate/splash_screen.dart';
 import 'package:ride_mate/wrapper.dart';
-
+import 'package:ride_mate/splash_screen.dart';
 void main() async{
     WidgetsFlutterBinding.ensureInitialized();
     //WidgetsFlutterBinding.ensureInitialized();
