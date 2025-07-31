@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ride_mate/login_page.dart';
-import 'package:ride_mate/otp_verification.dart';
 import 'package:ride_mate/terms_conditions.dart';
 import 'package:ride_mate/widgets/custom_test_feild.dart';
 import 'package:firebase_auth/firebase_auth.dart';

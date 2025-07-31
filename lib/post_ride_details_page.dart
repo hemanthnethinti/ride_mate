@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ride_mate/Database/posts.dart';
 import 'package:ride_mate/publish_ride_confirm.dart';
 
 class PostRideDetailsPage extends StatelessWidget {
@@ -100,7 +102,9 @@ class PostRideDetailsPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              onPressed: () {
+              onPressed: ()async {
+                User? user= FirebaseAuth.instance.currentUser;
+                      await Posts.setPost(user, pickupLocation,dropLocation,startTime,endTime, selectedDays, price);
                 Navigator.push(
                   context,
                   PageRouteBuilder(

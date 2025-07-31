@@ -1,11 +1,13 @@
 // available_rides_page.dart
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'ride_data_store.dart';
-import 'view_request_page.dart';
 
 class AvailableRidesPage extends StatelessWidget {
-  const AvailableRidesPage({super.key});
+  List<Map<String,dynamic>>? listlen;
+  AvailableRidesPage(this.listlen,{super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -144,35 +146,123 @@ class AvailableRidesPage extends StatelessWidget {
       },
     ];
 
-    return Scaffold(
-      appBar: AppBar(title: const Text("Available Rides")),
-      body: ListView.builder(
+   return Scaffold(
+      appBar: AppBar(
+        title: const Text("Available Rides"),
+        backgroundColor: Colors.orange,
+      ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('user').snapshots(),
+         builder: (context,snapshot){
+      return ListView.builder(
         padding: const EdgeInsets.all(12),
-        itemCount: rides.length,
+        itemCount: listlen!.length,
         itemBuilder: (context, index) {
-          final ride = rides[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            elevation: 4,
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(ride["imageUrl"]),
-              ),
-              title: Text(ride["name"]),
-              subtitle: Text("${ride["from"]} ➡ ${ride["to"]}"),
-              trailing: ElevatedButton(
-                onPressed: () {
-                  RideDataStore.selectedRide = ride;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Request sent to ${ride["name"]}")),
-                  );
-                },
-                child: const Text("Request Ride"),
+          final ride = listlen![index];
+          return FutureBuilder<DocumentSnapshot>(
+            future: FirebaseFirestore.instance.collection('user').doc(ride['userid']).get(),
+            builder: (context, userSnapshot) {
+              if (userSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (userSnapshot.hasError || !userSnapshot.hasData || !userSnapshot.data!.exists) {
+                return const Text('User info not available');
+              }
+              final userData = userSnapshot.data!.data() as Map<String, dynamic>;
+              return Card(
+                color: const Color.fromARGB(255, 244, 239, 171),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            //backgroundImage: NetworkImage(ride["imageUrl"]),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  userData['name'] ?? ' ',
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                                Text("Phone: ${userData['phone'] ?? ' '}"),
+                               // Text("Gender: ${ride['gender']?? ' '}"),
+                                //Text("Fare: ₹${ride['price']?? ' '}"),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              const Icon(Icons.star, color: Colors.amber),
+                              //Text(ride['rating'].toString()??"h"),
+                            ],
+                          ),
+                        ],
+                      ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on, color: Colors.green),
+                      const SizedBox(width: 4),
+                      Text("From: ${ride['PickupLoc']}"),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.flag, color: Colors.red),
+                      const SizedBox(width: 4),
+                      Text("To: ${ride['DropLoc']}"),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      onPressed: () async{
+                         final postsnap = await FirebaseFirestore.instance
+                      .collection('user')
+                      .doc(ride['userid'])
+                      .collection('posts')
+                      .doc(ride['doc']) // You may need to specify the correct post document ID here
+                      .update({
+                        'requests': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid])
+                      });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                         
+                          SnackBar(content: Text("Request has been sent to ${userData['name']??" "}")),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                      child: const Text(
+                        "Request a ride",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
         },
-      ),
-    );
+      );
+         }
+      );
+         
+         }
+      )
+      );
+    
   }
 }

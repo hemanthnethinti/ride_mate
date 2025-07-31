@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ride_mate/view_request_page.dart';
+import 'package:ride_mate/requests_page.dart';
 import 'post_ride_details_page.dart';
 
 class PostRidePage extends StatefulWidget {
@@ -56,264 +58,194 @@ class _PostRidePageState extends State<PostRidePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFFFFE0B2), Color(0xFFFFCC80)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: const Text(
+          "Map Your Route",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
+        backgroundColor: Colors.orange,
+        leading: const BackButton(),
       ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    buildToggle("One Way", false),
-                    buildToggle("Two Way", true),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: const [
-                    BoxShadow(
-                      blurRadius: 4,
-                      color: Colors.black12,
-                      offset: Offset(0, 3),
-                    )
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    buildLocationRow(
-                      icon: Icons.radio_button_checked,
-                      label: "Pickup Location",
-                      controller: pickupController,
-                      time: startTime,
-                      onTapTime: pickStartTime,
-
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: const Text(
-            "Map Your Route",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.orange,
-          leading: const BackButton(),
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8),
-
-                    ),
-                    child: Row(
-                      children: [
-                        buildToggle("One Way", false),
-                        buildToggle("Two Way", true),
-                      ],
-                    ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8),
                   ),
+                  child: Row(
+                    children: [
+                      buildToggle("One Way", false),
+                      buildToggle("Two Way", true),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                        blurRadius: 4,
+                        color: Colors.black12,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      buildLocationRow(
+                        icon: Icons.radio_button_checked,
+                        label: "Pickup Location",
+                        controller: pickupController,
+                        time: startTime,
+                        onTapTime: () => pickTime((time) => startTime = time),
+                      ),
+                      const Divider(),
+                      buildLocationRow(
+                        icon: Icons.location_on_outlined,
+                        label: "DropOff Location",
+                        controller: dropController,
+                        time: endTime,
+                        onTapTime: () => pickTime((time) => endTime = time),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                if (isTwoWay) ...[
                   const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 4,
-                          color: Colors.black12,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        buildLocationRow(
-                          icon: Icons.radio_button_checked,
-                          label: "Pickup Location",
-                          controller: pickupController,
-                          time: startTime,
-                          onTapTime: () => pickTime((time) => startTime = time),
-                        ),
-                        const Divider(),
-                        buildLocationRow(
-                          icon: Icons.location_on_outlined,
-                          label: "DropOff Location",
-                          controller: dropController,
-                          time: endTime,
-                          onTapTime: () => pickTime((time) => endTime = time),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  if (isTwoWay) ...[
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        const Icon(Icons.refresh, size: 24),
-                        const SizedBox(width: 10),
-                        const Text("Return Time:"),
-                        const SizedBox(width: 10),
-                        GestureDetector(
-                          onTap: () => pickTime((time) => returnTime = time),
-                          child: Text(
-                            formatTime(returnTime),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue,
-                            ),
+                  Row(
+                    children: [
+                      const Icon(Icons.refresh, size: 24),
+                      const SizedBox(width: 10),
+                      const Text("Return Time:"),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () => pickTime((time) => returnTime = time),
+                        child: Text(
+                          formatTime(returnTime),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                  const SizedBox(height: 25),
-                  const Text(
-                    'Travelling Days',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: days.map(buildDayChip).toList(),
-                  ),
-
-                  prefixIcon: const Icon(Icons.currency_rupee),
-                ),
-              ),
-
-              const SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                onPressed: () {
-                 
-                  print("Pickup: ${pickupController.text}");
-                  print("DropOff: ${dropController.text}");
-                  print("Start Time: ${formatTime(startTime)}");
-                  print("End Time: ${formatTime(endTime)}");
-                  print("Days: $selectedDays");
-                  print("Charge: ₹${priceController.text}");
-                },
-                child: const Text("Post Ride",style: TextStyle(fontSize: 16,color: Colors.white),),
-
-                  const SizedBox(height: 30),
-                  const Text(
-                    "Charge for the Ride (₹)",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: priceController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: "Enter amount",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
                       ),
-                      prefixIcon: const Icon(Icons.currency_rupee),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  PostRideDetailsPage(
-                                    pickupLocation: pickupController.text,
-                                    dropLocation: dropController.text,
-                                    startTime: startTime,
-                                    endTime: endTime,
-                                    returnTime: isTwoWay ? returnTime : null,
-                                    selectedDays: selectedDays,
-                                    price: priceController.text,
-                                    isTwoWay: isTwoWay,
-                                  ),
-                          transitionsBuilder: (
-                            context,
-                            animation,
-                            secondaryAnimation,
-                            child,
-                          ) {
-                            const begin = Offset(1.0, 0.0); 
-                            const end = Offset.zero;
-                            const curve = Curves.ease;
-
-                            final tween = Tween(
-                              begin: begin,
-                              end: end,
-                            ).chain(CurveTween(curve: curve));
-                            final offsetAnimation = animation.drive(tween);
-
-                            return SlideTransition(
-                              position: offsetAnimation,
-                              child: child,
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      "Post Ride",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                      backgroundColor: Colors.orange,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => ViewRequestPage()));
-                    },
-                    icon: const Icon(Icons.directions_car),
-                    label: const Text(
-                      "View Requests",
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    ],
                   ),
                 ],
-              ),
+                const SizedBox(height: 25),
+                const Text(
+                  'Travelling Days',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: days.map(buildDayChip).toList(),
+                ),
+                const SizedBox(height: 30),
+                const Text(
+                  "Charge for the Ride (₹)",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: priceController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: "Enter amount",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    prefixIcon: const Icon(Icons.currency_rupee),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) =>
+                                PostRideDetailsPage(
+                                  pickupLocation: pickupController.text,
+                                  dropLocation: dropController.text,
+                                  startTime: startTime,
+                                  endTime: endTime,
+                                  returnTime: isTwoWay ? returnTime : null,
+                                  selectedDays: selectedDays,
+                                  price: priceController.text,
+                                  isTwoWay: isTwoWay,
+                                ),
+                        transitionsBuilder: (
+                          context,
+                          animation,
+                          secondaryAnimation,
+                          child,
+                        ) {
+                          const begin = Offset(1.0, 0.0); 
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
+
+                          final tween = Tween(
+                            begin: begin,
+                            end: end,
+                          ).chain(CurveTween(curve: curve));
+                          final offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Post Ride",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: Colors.orange,
+                  ),
+                  onPressed: () async{
+                       List<String> list=[];
+                       User? user=FirebaseAuth.instance.currentUser;
+                        final snap=await FirebaseFirestore.instance.collection('user').doc(user?.uid).collection('posts').get();
+                       for(var doc in snap.docs){
+                            list.addAll([doc.id]);
+                            print(list);
+                        }
+                        
+                     Navigator.push(context, MaterialPageRoute(builder: (context)=>RequestsPage(docids: list,)));
+                    },
+                  icon: const Icon(Icons.directions_car),
+                  label: const Text(
+                    "View Requests",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
