@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ride_mate/publish_ride_confirm.dart';
 
 class PostRideDetailsPage extends StatelessWidget {
   final String pickupLocation;
@@ -33,116 +34,139 @@ class PostRideDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF3E0),
+      backgroundColor: const Color(0xFFF9F9F9),
       appBar: AppBar(
-        title: const Text("Ride Details"),
+        title: const Text("Ride Summary"),
         backgroundColor: Colors.orange,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            // Top Image
-            Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  'https://cdn-icons-png.freepik.com/256/1150/1150643.png',
-                  height: 120,
-                  width: 120,
-                  fit: BoxFit.cover,
-                ),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+
+          // Header Image
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(
+                'https://cdn-icons-png.freepik.com/256/1150/1150643.png',
+                height: 120,
               ),
             ),
-            const SizedBox(height: 16),
-            // Details Container
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.orange.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+          ),
+          const SizedBox(height: 20),
+
+          // Card Container
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
-                  child: ListView(
-                    children: [
-                      detailRow("From:", pickupLocation),
-                      const SizedBox(height: 12),
-                      detailRow("To:", dropLocation),
-                      const SizedBox(height: 12),
-                      detailRow("Start Time:", formatTime(startTime)),
-                      const SizedBox(height: 12),
-                      detailRow("Drop Time:", formatTime(endTime)),
-                      if (isTwoWay && returnTime != null) ...[
-                        const SizedBox(height: 12),
-                        detailRow("Return Time:", formatTime(returnTime)),
-                      ],
-                      const SizedBox(height: 12),
-                      detailRow("Travelling Days:", selectedDays.isEmpty ? "None" : selectedDays.join(', ')),
-                      const SizedBox(height: 12),
-                      detailRow("Charge:", "₹ $price"),
-                    ],
-                  ),
-                ),
+                ],
+              ),
+              child: ListView(
+                children: [
+                  rideDetail(Icons.location_on, "From", pickupLocation),
+                  rideDetail(Icons.flag, "To", dropLocation),
+                  rideDetail(Icons.access_time, "Start Time", formatTime(startTime)),
+                  rideDetail(Icons.timer_off, "Drop Time", formatTime(endTime)),
+                  if (isTwoWay && returnTime != null)
+                    rideDetail(Icons.loop, "Return Time", formatTime(returnTime)),
+                  rideDetail(Icons.calendar_today, "Days", selectedDays.isEmpty ? "None" : selectedDays.join(', ')),
+                  rideDetail(Icons.currency_rupee, "Price", "₹ $price"),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            // Confirm Button
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.check_circle_outline),
-                label: const Text("Confirm & Publish"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+          ),
+
+          // Confirm Button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Ride successfully posted!")),
-                  );
-                  Navigator.pop(context);
-                },
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const BookedConfirmationPage(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      const begin = Offset(0.0, 1.0); // from bottom
+                      const end = Offset.zero;
+                      const curve = Curves.easeOut;
+
+                      final tween = Tween(begin: begin, end: end)
+                          .chain(CurveTween(curve: curve));
+                      final offsetAnimation = animation.drive(tween);
+
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              },
+              child: const Text(
+                "Confirm & Publish Ride",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget detailRow(String title, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "$title ",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.deepOrange,
+  Widget rideDetail(IconData icon, String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: Colors.deepOrange),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "$title:",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(fontSize: 16),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
