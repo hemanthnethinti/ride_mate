@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ride_mate/login_page.dart';
 import 'package:ride_mate/otp_verification.dart';
@@ -16,6 +17,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _name = TextEditingController();
   final _email = TextEditingController();
+    final _phone = TextEditingController();
   final _pass = TextEditingController();
   final _repass = TextEditingController();
   final _key = GlobalKey<FormState>();
@@ -25,10 +27,10 @@ class _SignupPageState extends State<SignupPage> {
   final List<IconData> iconList = [
     FontAwesomeIcons.google,
     FontAwesomeIcons.facebook,
-    FontAwesomeIcons.github,
+    FontAwesomeIcons.microsoft,
   ];
   Future<void> reg()async{
-   // String errormess;
+   
       setState(() {
         _isloading=true;
       });
@@ -87,7 +89,7 @@ class _SignupPageState extends State<SignupPage> {
       }
       catch(e){
         setState(() {
-       // errormess = 'An unexpected error occurred: $e';
+       
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -101,7 +103,7 @@ class _SignupPageState extends State<SignupPage> {
        finally {
       if (mounted) {
         setState(() {
-          _isloading = false; // Always stop loading, regardless of success or failure
+          _isloading = false; 
         });
       }
     }
@@ -152,6 +154,32 @@ class _SignupPageState extends State<SignupPage> {
                   },
                 ),
                 const SizedBox(height: 15),
+                TextFormField(
+                  controller: _phone,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                       FilteringTextInputFormatter.digitsOnly, 
+                       LengthLimitingTextInputFormatter(10),   
+                   ],
+                  decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.phone, color: Colors.black),
+                  labelText: 'Phone Number',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                   validator: (value) {
+                     if (value == null || value.isEmpty) {
+                        return 'Please enter your phone number';
+                    } else if (value.length != 10) {
+                       return 'Phone number must be exactly 10 digits';
+                    }
+                    return null;
+                  },
+                ),
+
+
+              const SizedBox(height: 15),
                 CustomTextFeild(
                   label: 'Password',
                   pIcon: const Icon(Icons.lock),
