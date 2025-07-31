@@ -160,7 +160,7 @@ class _FindRidePageState extends State<FindRidePage> {
                 backgroundColor: Colors.orange,
                 minimumSize: const Size(double.infinity, 50),
               ),
-              child: const Text("Search Ride"),
+              child: const Text("Search Ride",style: TextStyle(color: Colors.black),),
             ),
             const SizedBox(height: 12),
             OutlinedButton.icon(
@@ -177,8 +177,8 @@ class _FindRidePageState extends State<FindRidePage> {
               label: const Text("Available Rides"),
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                side: const BorderSide(color: Colors.orange),
-                foregroundColor: Colors.orange,
+                foregroundColor: const Color.fromARGB(255, 0, 0, 0),
+                backgroundColor: Colors.orange
               ),
             ),
           ],

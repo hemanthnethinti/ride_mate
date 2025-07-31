@@ -121,7 +121,7 @@ class _MyHomeState extends State<MyHome> {
                         backgroundColor: Colors.orange,
                         minimumSize: const Size(double.infinity, 50),
                       ),
-                      child: const Text('Offer A Ride'),
+                      child: const Text('Offer A Ride',style: TextStyle(color: Colors.black),),
                     ),
                     const SizedBox(height: 30),
                     Expanded(
@@ -185,7 +185,7 @@ class _MyHomeState extends State<MyHome> {
                         backgroundColor: Colors.orange,
                         minimumSize: const Size(double.infinity, 50),
                       ),
-                      child: const Text('Need A Ride'),
+                      child: const Text('Need A Ride',style: TextStyle(color: Colors.black),),
                     ),
                   ],
                 ),

@@ -66,7 +66,9 @@ class _PostRidePageState extends State<PostRidePage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text("Map Your Route"),
+          title: const Text("Map Your Route",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           backgroundColor: Colors.orange,
           leading: const BackButton(),
         ),
