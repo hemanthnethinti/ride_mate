@@ -19,13 +19,8 @@ class _MyHomeState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const AppDrawer(), // ✅ Add Drawer here
-
+      drawer: const AppDrawer(), 
       appBar: AppBar(
-
-        //title: Text('Ride Mate APP!',style: TextStyle(),),
-        
-
         title: const Text(
           'Ride Mate',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -34,7 +29,7 @@ class _MyHomeState extends State<MyHome> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
             // Orange header

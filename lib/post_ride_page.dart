@@ -188,14 +188,14 @@ class _PostRidePageState extends State<PostRidePage> {
                         ),
                       );
                     },
-                    child: const Text("Post Ride"),
+                    child: const Text("Post Ride",style: TextStyle(color: Colors.black),),
                   ),
                   const SizedBox(height: 16),
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
+                  ElevatedButton.icon(
+                    style: OutlinedButton.styleFrom(minimumSize: const Size(double.infinity, 50),backgroundColor: Colors.orange),
                     onPressed: () {},
                     icon: const Icon(Icons.directions_car),
-                    label: const Text("View Requests"),
+                    label: const Text("View Requests",style: TextStyle(color: Colors.black),),
                   ),
                 ],
               ),
