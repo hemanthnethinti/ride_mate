@@ -1,13 +1,13 @@
-import 'dart:ui_web';
-
 import 'package:flutter/material.dart';
-import 'package:ride_mate/forgot_password.dart';
-import 'package:ride_mate/signup_page.dart';
-import 'package:ride_mate/widgets/custom_test_feild.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ride_mate/signup_page.dart';
+import 'package:ride_mate/forgot_password.dart';
+import 'package:ride_mate/widgets/custom_test_feild.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:ride_mate/wrapper.dart';
+import 'package:ride_mate/home_page.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -16,272 +16,268 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  
-
   final _email = TextEditingController();
   final _pass = TextEditingController();
   final _key = GlobalKey<FormState>();
-  bool _isloading=false;
+  bool _isloading = false;
+
   final List<IconData> iconList = [
     FontAwesomeIcons.google,
     FontAwesomeIcons.facebook,
-    FontAwesomeIcons.github,
+    FontAwesomeIcons.microsoft,
   ];
-  UserCredential? User;
-   Future<UserCredential?> signInWithGoogle() async{
+
+
+  Future<Map<String, String>> getUserDetails(String uid) async {
+    try {
+      final doc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      if (doc.exists) {
+        return {
+          'userName': doc[''] ?? '',
+          'userEmail': doc['email'] ?? '',
+          'userPhone': doc['phone'] ?? '',
+        };
+      }
+    } catch (e) {
+      print("Error fetching user details: $e");
+    }
+    return {'userName': 'Arshiya Mohammed', 'userEmail': '', 'userPhone': ''};
+  }
+
+  
+  Future<void> login() async {
+    setState(() => _isloading = true);
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _email.text.trim(),
+        password: _pass.text.trim(),
+      );
+
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await user.reload();
+        if (user.emailVerified) {
+        
+          final details = await getUserDetails(user.uid);
+
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyHome(
+                  userName: details['userName']!,
+                  userEmail: details['userEmail']!,
+                  userPhone: details['userPhone']!,
+                ),
+              ),
+            );
+          }
+
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Login successful')));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Please verify your email first'),
+              backgroundColor: Colors.orange));
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? e.code), backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) setState(() => _isloading = false);
+    }
+  }
+
+ 
+  Future<void> signInWithGoogle() async {
     try {
       final googleProvider = GoogleAuthProvider();
-      User = await FirebaseAuth.instance.signInWithPopup(googleProvider);
-      if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(
-            content:Text('Welcome back ${User!.user?.email}') )
-        );
-      }
-     
-    } catch (e) {
-      print("Error during Google Sign-In: $e");
-    }
-    return null;
-   }
+      final credential =
+          await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      final user = credential.user;
 
-   Future<UserCredential?> signInWithFacebook() async{
-    try {
-      final googleProvider = FacebookAuthProvider();
-      User = await FirebaseAuth.instance.signInWithPopup(googleProvider);
-      if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(
-            content:Text('Welcome back ${User!.user?.email}') )
-        );
-      }
-     
-    } catch (e) {
-      print("Error during Facebook Sign-In: $e");
-    }
-    return null;
-   }
-
-   Future<UserCredential?> signInWithMicrosoft() async{
-    try {
-      final googleProvider = MicrosoftAuthProvider();
-      User = await FirebaseAuth.instance.signInWithPopup(googleProvider);
-      if(mounted){
-        ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(
-            content:Text('Welcome back ${User!.user?.email}') )
-        );
-      }
-     
-    } catch (e) {
-      print("Error during Google Sign-In: $e");
-    }
-    return null;
-   }
-
-   Future<void> login() async{
-    String errormess;
-    setState(() {
-      _isloading=true;
-    });
-    try{
-       final currentUser = FirebaseAuth.instance.currentUser;
-       if(currentUser==null){
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email.text, password: _pass.text);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login successful'))
-        );
-       }
-       else{
-       await currentUser.reload();
-       if( currentUser.emailVerified){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>Wrapper()));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login successful'))
-        );
-       }
-        else{
-          print('Verify Email');
-        }
-       }
+      if (user != null) {
         
-    }
-    on FirebaseAuthException catch(e){
-      if (mounted) { // Only show SnackBar if widget is still mounted
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.code),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-    catch (e) {
-      // Catch any other unexpected errors
-     
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An unexpected error occurred: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-      print("General Error: ${e.toString()}");
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'name': user.displayName ?? "Google User",
+          'email': user.email ?? "",
+          'phone': user.phoneNumber ?? "No Phone",
+        }, SetOptions(merge: true));
 
-    } finally {
-      if (mounted) { // Ensure state is updated only if widget is mounted
-        setState(() {
-          _isloading = false; // Always stop loading, regardless of success or failure
-        });
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyHome(
+                userName: user.displayName ?? "Google User",
+                userEmail: user.email ?? "No Email",
+                userPhone: user.phoneNumber ?? "No Phone",
+              ),
+            ),
+          );
+        }
       }
+    } catch (e) {
+      print("Google Sign-In Error: $e");
     }
-    print("signin successful");
-   }
+  }
+
+ 
+  Future<void> signInWithFacebook() async {
+    try {
+      final fbProvider = FacebookAuthProvider();
+      final credential =
+          await FirebaseAuth.instance.signInWithPopup(fbProvider);
+      final user = credential.user;
+
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'name': user.displayName ?? "Facebook User",
+          'email': user.email ?? "",
+          'phone': user.phoneNumber ?? "No Phone",
+        }, SetOptions(merge: true));
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHome(
+              userName: user.displayName ?? "Facebook User",
+              userEmail: user.email ?? "No Email",
+              userPhone: user.phoneNumber ?? "No Phone",
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      print("Facebook Sign-In Error: $e");
+    }
+  }
+
+  
+  Future<void> signInWithMicrosoft() async {
+    try {
+      final msProvider = MicrosoftAuthProvider();
+      final credential =
+          await FirebaseAuth.instance.signInWithPopup(msProvider);
+      final user = credential.user;
+
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'name': user.displayName ?? "Microsoft User",
+          'email': user.email ?? "",
+          'phone': user.phoneNumber ?? "No Phone",
+        }, SetOptions(merge: true));
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHome(
+              userName: user.displayName ?? "Microsoft User",
+              userEmail: user.email ?? "No Email",
+              userPhone: user.phoneNumber ?? "No Phone",
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      print("Microsoft Sign-In Error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24), 
+          padding: const EdgeInsets.all(24),
           child: Form(
             key: _key,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  'Login',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
+                const Text('Login',
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 40),
+
+                
                 CustomTextFeild(
                   label: 'Email',
                   pIcon: const Icon(Icons.mail),
                   controller: _email,
-                  validate: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    } else if (!value.contains('@')) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
+                  validate: (v) =>
+                      v == null || v.isEmpty ? 'Enter email' : null,
                 ),
                 const SizedBox(height: 15),
+
+               
                 CustomTextFeild(
                   label: 'Password',
                   pIcon: const Icon(Icons.lock),
                   controller: _pass,
                   isPassword: true,
-                  validate: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
+                  validate: (v) =>
+                      v == null || v.isEmpty ? 'Enter password' : null,
                 ),
-                const SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPassword()));
-                      },
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 10),
+
+                
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => ForgotPassword())),
+                      child: const Text('Forgot Password?',
+                          style: TextStyle(fontWeight: FontWeight.bold))),
                 ),
                 const SizedBox(height: 20),
+
+                
                 ElevatedButton(
                   onPressed: () {
-                    if (_key.currentState!.validate()) {
-                      debugPrint('Email: ${_email.text}');
-                      debugPrint('Password: ${_pass.text}');
-                      login();
-                    }
-                  },             
+                    if (_key.currentState!.validate()) login();
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0D2B45),
-                    minimumSize: const Size(double.infinity, 60),
-                  ),
-                  child: _isloading?CircularProgressIndicator():
-                  const Text(
-                    'Login',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
+                      backgroundColor: const Color(0xFF0D2B45),
+                      minimumSize: const Size(double.infinity, 60)),
+                  child: _isloading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('Login',
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 15),
+
+                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account?",
-                        style: TextStyle(color: Colors.black)),
+                    const Text("Don't have an account?"),
                     const SizedBox(width: 5),
                     InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignupPage()),
-                        );
-                      },
-                      child: const Text(
-                        'SignUp here',
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
-                      ),
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const SignupPage())),
+                      child: const Text('Sign Up',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
                     )
                   ],
                 ),
                 const SizedBox(height: 20),
+
+                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [ 
-                    Container(
-                        height: 50,
-                        width: 50,
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: IconButton(onPressed: (){
-                          signInWithGoogle();
-                        }, icon: Icon(iconList[0]))
-                      ),
-                      Container(
-                        height: 50,
-                        width: 50,
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: IconButton(onPressed: (){
-                          signInWithFacebook();
-                        }, icon: Icon(iconList[1]))
-                      ),
-                      Container(
-                        height: 50,
-                        width: 50,
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: IconButton(onPressed: (){
-                          signInWithMicrosoft();
-                        }, icon: Icon(iconList[2])),
-                      ),
-                    ]
-                  ),
+                  children: [
+                    _social(iconList[0], signInWithGoogle),
+                    _social(iconList[1], signInWithFacebook),
+                    _social(iconList[2], signInWithMicrosoft),
+                  ],
+                )
               ],
             ),
           ),
@@ -289,5 +285,15 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-}
 
+
+  Widget _social(IconData icon, VoidCallback onTap) => Container(
+        height: 50,
+        width: 50,
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(8)),
+        child: IconButton(onPressed: onTap, icon: Icon(icon)),
+      );
+}

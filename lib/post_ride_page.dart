@@ -73,7 +73,7 @@ class _PostRidePageState extends State<PostRidePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // One Way / Two Way Toggle
+              
               Container(
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
@@ -88,7 +88,7 @@ class _PostRidePageState extends State<PostRidePage> {
               ),
               const SizedBox(height: 20),
 
-              // Pickup & Drop with Time
+              
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -166,7 +166,7 @@ class _PostRidePageState extends State<PostRidePage> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () {
-                  // Handle submission here
+                 
                   print("Pickup: ${pickupController.text}");
                   print("DropOff: ${dropController.text}");
                   print("Start Time: ${formatTime(startTime)}");
@@ -174,7 +174,7 @@ class _PostRidePageState extends State<PostRidePage> {
                   print("Days: $selectedDays");
                   print("Charge: ₹${priceController.text}");
                 },
-                child: const Text("Post Ride"),
+                child: const Text("Post Ride",style: TextStyle(fontSize: 16,color: Colors.white),),
               ),
             ],
           ),

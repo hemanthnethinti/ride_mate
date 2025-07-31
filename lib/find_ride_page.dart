@@ -53,7 +53,7 @@ class _FindRidePageState extends State<FindRidePage> {
         backgroundColor: Colors.orange,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -78,7 +78,9 @@ class _FindRidePageState extends State<FindRidePage> {
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
               value: _genderPref,
-              decoration: const InputDecoration(labelText: 'Gender Preference'),
+              decoration: InputDecoration(labelText: 'Gender Preference',border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+              )),
               items: ['Any', 'Male', 'Female']
                   .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                   .toList(),
@@ -87,37 +89,43 @@ class _FindRidePageState extends State<FindRidePage> {
               },
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Seats Required"),
-                DropdownButton<int>(
-                  value: _seats,
-                  items: List.generate(6, (i) => i + 1)
-                      .map((s) => DropdownMenuItem(value: s, child: Text(s.toString())))
-                      .toList(),
-                  onChanged: (val) {
-                    if (val != null) setState(() => _seats = val);
-                  },
-                )
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Seats Required",style: TextStyle(fontSize: 16),),
+                  DropdownButton<int>(
+                    value: _seats,
+                    items: List.generate(6, (i) => i + 1)
+                        .map((s) => DropdownMenuItem(value: s, child: Text(s.toString())))
+                        .toList(),
+                    onChanged: (val) {
+                      if (val != null) setState(() => _seats = val);
+                    },
+                  )
+                ],
+              ),
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Max Fare: ₹"),
-                Expanded(
-                  child: Slider(
-                    value: _maxFare,
-                    min: 50,
-                    max: 1000,
-                    divisions: 19,
-                    label: '₹${_maxFare.round()}',
-                    onChanged: (val) => setState(() => _maxFare = val),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Max Fare: ₹",style: TextStyle(fontSize: 16),),
+                  Expanded(
+                    child: Slider(
+                      value: _maxFare,
+                      min: 50,
+                      max: 1000,
+                      divisions: 19,
+                      label: '₹${_maxFare.round()}',
+                      onChanged: (val) => setState(() => _maxFare = val),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SwitchListTile(
               title: const Text("Verified Bikers Only"),
@@ -127,7 +135,7 @@ class _FindRidePageState extends State<FindRidePage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Send filters to SearchResultsPage
+                
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -139,7 +147,7 @@ class _FindRidePageState extends State<FindRidePage> {
                 backgroundColor: Colors.orange,
                 minimumSize: const Size(double.infinity, 50),
               ),
-              child: const Text("Search Ride"),
+              child: const Text("Search Ride",style: TextStyle(fontSize: 16,color: Colors.white),),
             ),
           ],
         ),
@@ -152,7 +160,9 @@ class _FindRidePageState extends State<FindRidePage> {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        border: const OutlineInputBorder(),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
       ),
     );
   }
