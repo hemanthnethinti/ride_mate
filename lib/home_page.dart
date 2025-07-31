@@ -32,6 +32,7 @@ Future<void> signOut() async {
 class _MyHomeState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
+
     
     RideSearchDetails rideData = widget.rideDetails ??
         RideSearchDetails(
@@ -54,6 +55,11 @@ class _MyHomeState extends State<MyHome> {
       ),
       appBar: AppBar(
         automaticallyImplyLeading: true,
+
+    return Scaffold(
+      drawer: const AppDrawer(), 
+      appBar: AppBar(
+
         title: const Text(
           'Ride Mate',
           style: TextStyle(
@@ -84,7 +90,11 @@ class _MyHomeState extends State<MyHome> {
         backgroundColor: Colors.orange,
       ),
       body: Padding(
+
         padding: const EdgeInsets.all(16),
+
+        padding: const EdgeInsets.all(14.0),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -100,6 +110,7 @@ class _MyHomeState extends State<MyHome> {
               ),
             ),
             const SizedBox(height: 30),
+
 
           
             _buildRideOption(
@@ -127,6 +138,144 @@ class _MyHomeState extends State<MyHome> {
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => const FindRidePage()));
               },
+
+            
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 6,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Text
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'Offer A Ride',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'I need to fill empty seats',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            // Image
+                            Image.network(
+                              "https://www.shutterstock.com/image-vector/happy-couple-young-people-rides-600nw-1619620189.jpg",
+                              height: 130,
+                              width: 130,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PostRidePage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                      child: const Text('Offer A Ride',style: TextStyle(color: Colors.black),),
+                    ),
+                    const SizedBox(height: 30),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 6,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Text
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'Find A Ride',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'I need a ride',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            // Image
+                            Image.network(
+                              "https://png.pngtree.com/png-vector/20221129/ourmid/pngtree-illustration-of-a-vector-icon-for-a-ridesharing-app-or-taxi-cab-app-vector-png-image_42258176.jpg",
+                              height: 150,
+                              width: 150,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const FindRidePage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                      child: const Text('Need A Ride',style: TextStyle(color: Colors.black),),
+                    ),
+                  ],
+                ),
+              ),
+
             ),
           ],
         ),

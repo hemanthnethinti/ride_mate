@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ride_mate/available_rides.dart';
 import 'package:ride_mate/search_ride_page.dart';
 
 class FindRidePage extends StatefulWidget {
@@ -49,7 +50,10 @@ class _FindRidePageState extends State<FindRidePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Find A Ride'),
+        title: const Text(
+          'Find A Ride',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.orange,
       ),
       body: SingleChildScrollView(
@@ -57,38 +61,57 @@ class _FindRidePageState extends State<FindRidePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTextField(controller: _fromController, label: 'From (Pickup Location)'),
+            _buildTextField(
+              controller: _fromController,
+              label: 'From (Pickup Location)',
+            ),
             const SizedBox(height: 10),
-            _buildTextField(controller: _toController, label: 'To (Drop Location)'),
+            _buildTextField(
+              controller: _toController,
+              label: 'To (Drop Location)',
+            ),
             const SizedBox(height: 10),
             ListTile(
-              title: Text(_selectedDate == null
-                  ? 'Select Date'
-                  : 'Date: ${DateFormat.yMMMd().format(_selectedDate!)}'),
+              title: Text(
+                _selectedDate == null
+                    ? 'Select Date'
+                    : 'Date: ${DateFormat.yMMMd().format(_selectedDate!)}',
+              ),
               trailing: const Icon(Icons.calendar_today),
               onTap: _pickDate,
             ),
             ListTile(
-              title: Text(_selectedTime == null
-                  ? 'Select Time'
-                  : 'Time: ${_selectedTime!.format(context)}'),
+              title: Text(
+                _selectedTime == null
+                    ? 'Select Time'
+                    : 'Time: ${_selectedTime!.format(context)}',
+              ),
               trailing: const Icon(Icons.access_time),
               onTap: _pickTime,
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
               value: _genderPref,
+
               decoration: InputDecoration(labelText: 'Gender Preference',border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
               )),
               items: ['Any', 'Male', 'Female']
                   .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                   .toList(),
+
+              decoration: const InputDecoration(labelText: 'Gender Preference'),
+              items:
+                  ['Any', 'Male', 'Female']
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                      .toList(),
+
               onChanged: (val) {
                 if (val != null) setState(() => _genderPref = val);
               },
             ),
             const SizedBox(height: 20),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -106,6 +129,28 @@ class _FindRidePageState extends State<FindRidePage> {
                   )
                 ],
               ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("Seats Required"),
+                DropdownButton<int>(
+                  value: _seats,
+                  items:
+                      List.generate(6, (i) => i + 1)
+                          .map(
+                            (s) => DropdownMenuItem(
+                              value: s,
+                              child: Text(s.toString()),
+                            ),
+                          )
+                          .toList(),
+                  onChanged: (val) {
+                    if (val != null) setState(() => _seats = val);
+                  },
+                ),
+              ],
+
             ),
             const SizedBox(height: 20),
             Padding(
@@ -147,7 +192,30 @@ class _FindRidePageState extends State<FindRidePage> {
                 backgroundColor: Colors.orange,
                 minimumSize: const Size(double.infinity, 50),
               ),
+
               child: const Text("Search Ride",style: TextStyle(fontSize: 16,color: Colors.white),),
+
+              child: const Text("Search Ride",style: TextStyle(color: Colors.black),),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AvailableRidesPage(),
+                  ),
+                );
+              },
+
+              icon: const Icon(Icons.list_alt),
+              label: const Text("Available Rides"),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                foregroundColor: const Color.fromARGB(255, 0, 0, 0),
+                backgroundColor: Colors.orange
+              ),
+
             ),
           ],
         ),
@@ -155,14 +223,22 @@ class _FindRidePageState extends State<FindRidePage> {
     );
   }
 
-  Widget _buildTextField({required TextEditingController controller, required String label}) {
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+  }) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
+
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),
+
+        prefixIcon: const Icon(Icons.location_on, color: Colors.green),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+
       ),
     );
   }
