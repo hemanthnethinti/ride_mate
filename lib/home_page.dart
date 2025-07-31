@@ -19,13 +19,8 @@ class _MyHomeState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const AppDrawer(), // ✅ Add Drawer here
-
+      drawer: const AppDrawer(), 
       appBar: AppBar(
-
-        //title: Text('Ride Mate APP!',style: TextStyle(),),
-        
-
         title: const Text(
           'Ride Mate',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -34,7 +29,7 @@ class _MyHomeState extends State<MyHome> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
             // Orange header
@@ -73,7 +68,7 @@ class _MyHomeState extends State<MyHome> {
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withOpacity(0.5),
                               spreadRadius: 2,
                               blurRadius: 6,
                               offset: const Offset(0, 4),
@@ -126,7 +121,7 @@ class _MyHomeState extends State<MyHome> {
                         backgroundColor: Colors.orange,
                         minimumSize: const Size(double.infinity, 50),
                       ),
-                      child: const Text('Offer A Ride'),
+                      child: const Text('Offer A Ride',style: TextStyle(color: Colors.black),),
                     ),
                     const SizedBox(height: 30),
                     Expanded(
@@ -137,7 +132,7 @@ class _MyHomeState extends State<MyHome> {
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withOpacity(0.5),
                               spreadRadius: 2,
                               blurRadius: 6,
                               offset: const Offset(0, 4),
@@ -190,7 +185,7 @@ class _MyHomeState extends State<MyHome> {
                         backgroundColor: Colors.orange,
                         minimumSize: const Size(double.infinity, 50),
                       ),
-                      child: const Text('Need A Ride'),
+                      child: const Text('Need A Ride',style: TextStyle(color: Colors.black),),
                     ),
                   ],
                 ),
