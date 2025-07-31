@@ -73,7 +73,7 @@ class _MyHomeState extends State<MyHome> {
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withOpacity(0.5),
                               spreadRadius: 2,
                               blurRadius: 6,
                               offset: const Offset(0, 4),
@@ -137,7 +137,7 @@ class _MyHomeState extends State<MyHome> {
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withOpacity(0.5),
                               spreadRadius: 2,
                               blurRadius: 6,
                               offset: const Offset(0, 4),
