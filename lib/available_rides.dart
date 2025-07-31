@@ -1,4 +1,8 @@
+// available_rides_page.dart
+
 import 'package:flutter/material.dart';
+import 'ride_data_store.dart';
+import 'view_request_page.dart';
 
 class AvailableRidesPage extends StatelessWidget {
   const AvailableRidesPage({super.key});
@@ -141,89 +145,29 @@ class AvailableRidesPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Available Rides"),
-        backgroundColor: Colors.orange,
-      ),
+      appBar: AppBar(title: const Text("Available Rides")),
       body: ListView.builder(
         padding: const EdgeInsets.all(12),
         itemCount: rides.length,
         itemBuilder: (context, index) {
           final ride = rides[index];
           return Card(
-            color: const Color.fromARGB(255, 244, 239, 171),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            elevation: 4,
             margin: const EdgeInsets.symmetric(vertical: 10),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundImage: NetworkImage(ride["imageUrl"]),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              ride["name"],
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Text("Phone: ${ride["phone"]}"),
-                            Text("Gender: ${ride["gender"]}"),
-                            Text("Fare: ₹${ride["price"]}"),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber),
-                          Text(ride["rating"].toString()),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on, color: Colors.green),
-                      const SizedBox(width: 4),
-                      Text("From: ${ride["from"]}"),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Icon(Icons.flag, color: Colors.red),
-                      const SizedBox(width: 4),
-                      Text("To: ${ride["to"]}"),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Request has been sent to ${ride["name"]}")),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                      child: const Text(
-                        "Request a ride",
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ],
+            elevation: 4,
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(ride["imageUrl"]),
+              ),
+              title: Text(ride["name"]),
+              subtitle: Text("${ride["from"]} ➡ ${ride["to"]}"),
+              trailing: ElevatedButton(
+                onPressed: () {
+                  RideDataStore.selectedRide = ride;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Request sent to ${ride["name"]}")),
+                  );
+                },
+                child: const Text("Request Ride"),
               ),
             ),
           );

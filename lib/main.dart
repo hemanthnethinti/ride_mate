@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ride_mate/home_page.dart';
+import 'package:ride_mate/splash_screen.dart';
 import 'package:ride_mate/wrapper.dart';
 
 void main() async{
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHome()
+      home: SplashScreen()
     );
   }
 }

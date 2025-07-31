@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ride_mate/view_request_page.dart';
 import 'post_ride_details_page.dart';
 
 class PostRidePage extends StatefulWidget {
@@ -233,7 +234,10 @@ class _PostRidePageState extends State<PostRidePage> {
                       minimumSize: const Size(double.infinity, 50),
                       backgroundColor: Colors.orange,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => ViewRequestPage()));
+                    },
                     icon: const Icon(Icons.directions_car),
                     label: const Text(
                       "View Requests",

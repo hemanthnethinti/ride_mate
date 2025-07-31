@@ -6,23 +6,26 @@ class BookedConfirmationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[600],
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(),
-            Image.network(
-              "https://image.pngaaa.com/53/1529053-middle.png", 
-              height: 200,
+            Align(
+              alignment: Alignment.center,
+              child: Image.network(
+                "https://png.pngtree.com/png-clipart/20230925/original/pngtree-flat-style-car-sharing-with-free-reservation-map-and-pink-car-png-image_12761433.png", 
+                height: 200,
+              ),
             ),
             const SizedBox(height: 24),
             const Text(
-              'Booked! Enjoy your ride',
+              'Ride Posted Succesfully',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Color.fromARGB(255, 0, 0, 0),
               ),
             ),
             const Spacer(),
