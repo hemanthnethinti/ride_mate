@@ -213,7 +213,7 @@ body: Builder(
         ),
       );
     } else if (_selectedIndex == 1) {
-      return const MyPosts();
+      return  MyPosts();
     } else {
       return MyRides(list: request_list);
     }

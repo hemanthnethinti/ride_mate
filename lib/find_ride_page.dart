@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ride_mate/Database/getrides.dart';
@@ -194,15 +193,70 @@ class _FindRidePageState extends State<FindRidePage> {
                 const SizedBox(height: 20),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.search),
-                  onPressed: ()async {
-                     User? usercred=FirebaseAuth.instance.currentUser;
-                List<Map<String,dynamic>>? list=await GetRidesOfUser.getRides();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>SearchResultsPage(list),
+                  onPressed: () async {
+                    // Validate input
+                    if (_fromController.text.trim().isEmpty || _toController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter both pickup and drop locations'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+
+                    // Show loading indicator
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) => const Center(
+                        child: CircularProgressIndicator(),
                       ),
                     );
+
+                    try {
+                      List<Map<String, dynamic>>? allRides = await GetRidesOfUser.getRides();
+                      
+                      // Filter rides based on search criteria
+                      List<Map<String, dynamic>> filteredRides = [];
+                      filteredRides = allRides.where((ride) {
+                        final pickupLoc = (ride['PickupLoc'] ?? '').toString().toLowerCase();
+                        final dropLoc = (ride['DropLoc'] ?? '').toString().toLowerCase();
+                        final fromSearch = _fromController.text.trim().toLowerCase();
+                        final toSearch = _toController.text.trim().toLowerCase();
+                        
+                        // Check if locations match (contains for partial matching)
+                        bool fromMatches = pickupLoc.contains(fromSearch) || fromSearch.contains(pickupLoc);
+                        bool toMatches = dropLoc.contains(toSearch) || toSearch.contains(dropLoc);
+                        
+                        return fromMatches && toMatches;
+                      }).toList();
+
+                      // Hide loading indicator
+                      Navigator.of(context).pop();
+
+                      // Navigate to search results
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchResultsPage(
+                            filteredRides,
+                            searchFrom: _fromController.text.trim(),
+                            searchTo: _toController.text.trim(),
+                          ),
+                        ),
+                      );
+                    } catch (e) {
+                      // Hide loading indicator
+                      Navigator.of(context).pop();
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error searching rides: $e'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
@@ -220,7 +274,6 @@ class _FindRidePageState extends State<FindRidePage> {
                 OutlinedButton.icon(
                   icon: const Icon(Icons.list_alt),
                   onPressed: ()async {
-                     User? usercred=FirebaseAuth.instance.currentUser;
                 List<Map<String,dynamic>>? list=await GetRidesOfUser.getRides();
                 Navigator.push(
                   context,

@@ -262,7 +262,6 @@ class _RequestsPageState extends State<RequestsPage> {
                             .where('accepted', arrayContains: currentUser?.uid)
                             .get();
                         for (var post in postsnapshot.docs) {
-                          
                           request_list.add(post.data());
                         }
                       }
@@ -273,7 +272,7 @@ class _RequestsPageState extends State<RequestsPage> {
                         const SnackBar(content: Text("User accepted")),
                       );
                     },
-                    child: Text(_isAccepted ? 'Accepted' : 'UnAccepted'),
+                    child: Text(_isAccepted ? 'Accepte' : 'UnAccepted'),
                   ),
                 );
               },

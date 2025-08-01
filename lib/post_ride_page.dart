@@ -96,7 +96,7 @@ class _PostRidePageState extends State<PostRidePage> {
                     boxShadow: const [
                       BoxShadow(
                         blurRadius: 4,
-                        color: Colors.black12,
+                        color: Colors.orange,
                         offset: Offset(0, 3),
                       ),
                     ],
