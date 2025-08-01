@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ride_mate/requests_page.dart';
 import 'post_ride_details_page.dart';
+import 'location_picker_page.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PostRidePage extends StatefulWidget {
   const PostRidePage({super.key});
@@ -23,6 +25,9 @@ class _PostRidePageState extends State<PostRidePage> {
   final TextEditingController pickupController = TextEditingController();
   final TextEditingController dropController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+
+  LatLng? pickupLatLng;
+  LatLng? dropLatLng;
 
   Widget buildDayChip(String day) {
     final isSelected = selectedDays.contains(day);
@@ -109,6 +114,7 @@ class _PostRidePageState extends State<PostRidePage> {
                         controller: pickupController,
                         time: startTime,
                         onTapTime: () => pickTime((time) => startTime = time),
+                        isPickup: true,
                       ),
                       const Divider(),
                       buildLocationRow(
@@ -117,6 +123,7 @@ class _PostRidePageState extends State<PostRidePage> {
                         controller: dropController,
                         time: endTime,
                         onTapTime: () => pickTime((time) => endTime = time),
+                        isPickup: false,
                       ),
                     ],
                   ),
@@ -181,38 +188,27 @@ class _PostRidePageState extends State<PostRidePage> {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder:
-                            (context, animation, secondaryAnimation) =>
-                                PostRideDetailsPage(
-                                  pickupLocation: pickupController.text,
-                                  dropLocation: dropController.text,
-                                  startTime: startTime,
-                                  endTime: endTime,
-                                  returnTime: isTwoWay ? returnTime : null,
-                                  selectedDays: selectedDays,
-                                  price: priceController.text,
-                                  isTwoWay: isTwoWay,
-                                ),
-                        transitionsBuilder: (
-                          context,
-                          animation,
-                          secondaryAnimation,
-                          child,
-                        ) {
-                          const begin = Offset(1.0, 0.0); 
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            PostRideDetailsPage(
+                              pickupLocation: pickupController.text,
+                              dropLocation: dropController.text,
+                              startTime: startTime,
+                              endTime: endTime,
+                              returnTime: isTwoWay ? returnTime : null,
+                              selectedDays: selectedDays,
+                              price: priceController.text,
+                              isTwoWay: isTwoWay,
+                            ),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
                           const end = Offset.zero;
                           const curve = Curves.ease;
 
-                          final tween = Tween(
-                            begin: begin,
-                            end: end,
-                          ).chain(CurveTween(curve: curve));
+                          final tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
                           final offsetAnimation = animation.drive(tween);
 
-                          return SlideTransition(
-                            position: offsetAnimation,
-                            child: child,
-                          );
+                          return SlideTransition(position: offsetAnimation, child: child);
                         },
                       ),
                     );
@@ -228,21 +224,23 @@ class _PostRidePageState extends State<PostRidePage> {
                     minimumSize: const Size(double.infinity, 50),
                     backgroundColor: Colors.orange,
                   ),
+                  onPressed: () async {
+                    List<String> list = [];
+                    User? user = FirebaseAuth.instance.currentUser;
+                    final snap = await FirebaseFirestore.instance
+                        .collection('user')
+                        .doc(user?.uid)
+                        .collection('posts')
+                        .get();
+                    for (var doc in snap.docs) {
+                      list.add(doc.id);
+                    }
 
-                  onPressed: () async{
-                       List<String> list=[];
-                       User? user=FirebaseAuth.instance.currentUser;
-                        final snap=await FirebaseFirestore.instance.collection('user').doc(user?.uid).collection('posts').get();
-                       for(var doc in snap.docs){
-                            list.addAll([doc.id]);
-                            print(list);
-                        }
-                        
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=>RequestsPage(docids: list,)));
-                    },
-
-                  
-
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RequestsPage(docids: list)),
+                    );
+                  },
                   icon: const Icon(Icons.directions_car),
                   label: const Text(
                     "View Requests",
@@ -263,6 +261,7 @@ class _PostRidePageState extends State<PostRidePage> {
     required TextEditingController controller,
     required TimeOfDay? time,
     required VoidCallback onTapTime,
+    required bool isPickup,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,10 +279,7 @@ class _PostRidePageState extends State<PostRidePage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 10,
-                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 ),
               ),
             ),
@@ -305,12 +301,30 @@ class _PostRidePageState extends State<PostRidePage> {
         Align(
           alignment: Alignment.centerLeft,
           child: TextButton.icon(
-            onPressed: () {},
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LocationPickerPage(),
+                ),
+              );
+
+              if (result != null) {
+                final address = result['address'];
+                final LatLng latLng = result['latLng'];
+
+                setState(() {
+                  controller.text = address;
+                  if (isPickup) {
+                    pickupLatLng = latLng;
+                  } else {
+                    dropLatLng = latLng;
+                  }
+                });
+              }
+            },
             icon: const Icon(Icons.location_on, color: Colors.orange),
-            label: const Text(
-              "Select on Map",
-              style: TextStyle(color: Colors.orange),
-            ),
+            label: const Text("Select on Map", style: TextStyle(color: Colors.orange)),
           ),
         ),
         const SizedBox(height: 8),
