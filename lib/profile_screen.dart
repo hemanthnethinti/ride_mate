@@ -69,10 +69,8 @@ class _ProfilePageState extends State<ProfilePage> {
         firstDate: DateTime(1950),
         lastDate: DateTime.now(),
       );
-      if (picked != null) {
-        newValue = "${picked.day}/${picked.month}/${picked.year}";
-      }
-    } else {
+      newValue = "${picked!.day}/${picked.month}/${picked.year}";
+        } else {
       newValue = await showModalBottomSheet<String>(
         context: context,
         isScrollControlled: true,
