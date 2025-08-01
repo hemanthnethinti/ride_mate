@@ -64,15 +64,30 @@ class _MyHomeState extends State<MyHome> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 5),
-                  Text(subtitle, style: const TextStyle(fontSize: 16)),
-                ],
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 5),
+                    Text(subtitle, style: const TextStyle(fontSize: 16)),
+                  ],
+                ),
               ),
-              Image.network(imageUrl, height: 150, width: 130),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  constraints: const BoxConstraints(maxHeight: 150, maxWidth: 130),
+                  child: Image.network(
+                    imageUrl, 
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.image_not_supported, size: 80, color: Colors.grey);
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -198,9 +213,9 @@ body: Builder(
         ),
       );
     } else if (_selectedIndex == 1) {
-      return Center(child: Text("My posts (Coming Soon)"));
+      return const MyPosts();
     } else {
-      return const Center(child: Text("My Rides (Coming Soon)"));
+      return MyRides(list: request_list);
     }
   },
 ),
@@ -213,26 +228,12 @@ body: Builder(
           setState(() {
             _selectedIndex = index;
           });
-
-           if (index == 1) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyPosts()),
-    );
-  } else if (index == 2) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyRides(list: request_list)),
-    );
-  }
-
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.post_add),
             label: 'My Posts',
-            
           ),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'My Rides'),
         ],

@@ -228,7 +228,7 @@ class _PostRidePageState extends State<PostRidePage> {
                     minimumSize: const Size(double.infinity, 50),
                     backgroundColor: Colors.orange,
                   ),
-<<<<<<< HEAD
+
                   onPressed: () async{
                        List<String> list=[];
                        User? user=FirebaseAuth.instance.currentUser;
@@ -240,12 +240,9 @@ class _PostRidePageState extends State<PostRidePage> {
                         
                      Navigator.push(context, MaterialPageRoute(builder: (context)=>RequestsPage(docids: list,)));
                     },
-=======
-                  onPressed: () {
-                    Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => ViewRequestPage()));
-                  },
->>>>>>> 8fae278d6ae0065a4e0efe96fd7017019f16e2e7
+
+                  
+
                   icon: const Icon(Icons.directions_car),
                   label: const Text(
                     "View Requests",

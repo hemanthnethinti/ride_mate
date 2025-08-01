@@ -156,115 +156,20 @@ class _FindRidePageState extends State<FindRidePage> {
                   items: ['Any', 'Male', 'Female']
                       .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                       .toList(),
-
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTextField(
-              controller: _fromController,
-              label: 'From (Pickup Location)',
-            ),
-            const SizedBox(height: 10),
-            _buildTextField(
-              controller: _toController,
-              label: 'To (Drop Location)',
-            ),
-            const SizedBox(height: 10),
-            ListTile(
-              title: Text(
-                _selectedDate == null
-                    ? 'Select Date'
-                    : 'Date: ${DateFormat.yMMMd().format(_selectedDate!)}',
-              ),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: _pickDate,
-            ),
-            ListTile(
-              title: Text(
-                _selectedTime == null
-                    ? 'Select Time'
-                    : 'Time: ${_selectedTime!.format(context)}',
-              ),
-              trailing: const Icon(Icons.access_time),
-              onTap: _pickTime,
-            ),
-            const SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              value: _genderPref,
-
-              decoration: InputDecoration(labelText: 'Gender Preference',border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-              )),
-              items: ['Any', 'Male', 'Female']
-                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                  .toList(),
-
-              decoration: const InputDecoration(labelText: 'Gender Preference'),
-              items:
-                  ['Any', 'Male', 'Female']
-                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                      .toList(),
-
-              onChanged: (val) {
-                if (val != null) setState(() => _genderPref = val);
-              },
-            ),
-            const SizedBox(height: 20),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text("Seats Required",style: TextStyle(fontSize: 16),),
-                  DropdownButton<int>(
-                    value: _seats,
-                    items: List.generate(6, (i) => i + 1)
-                        .map((s) => DropdownMenuItem(value: s, child: Text(s.toString())))
-                        .toList(),
-                    onChanged: (val) {
-                      if (val != null) setState(() => _seats = val);
-                    },
-                  )
-                ],
-              ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Seats Required"),
-                DropdownButton<int>(
-                  value: _seats,
-                  items:
-                      List.generate(6, (i) => i + 1)
-                          .map(
-                            (s) => DropdownMenuItem(
-                              value: s,
-                              child: Text(s.toString()),
-                            ),
-                          )
-                          .toList(),
-
                   onChanged: (val) {
                     if (val != null) setState(() => _genderPref = val);
                   },
                 ),
-
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("Seats Required"),
+                    const Text("Seats Required", style: TextStyle(fontSize: 16)),
                     DropdownButton<int>(
                       value: _seats,
-                      items: List.generate(
-                        6,
-                        (i) => DropdownMenuItem(
-                          value: i + 1,
-                          child: Text((i + 1).toString()),
-                        ),
-                      ),
+                      items: List.generate(6, (i) => i + 1)
+                          .map((s) => DropdownMenuItem(value: s, child: Text(s.toString())))
+                          .toList(),
                       onChanged: (val) {
                         if (val != null) setState(() => _seats = val);
                       },
@@ -272,34 +177,14 @@ class _FindRidePageState extends State<FindRidePage> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Max Fare: ₹${_maxFare.round()}"),
-                    Slider(
-
-              ],
-
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text("Max Fare: ₹",style: TextStyle(fontSize: 16),),
-                  Expanded(
-                    child: Slider(
-
-                      value: _maxFare,
-                      min: 50,
-                      max: 1000,
-                      divisions: 19,
-                      label: '₹${_maxFare.round()}',
-                      onChanged: (val) => setState(() => _maxFare = val),
-                    ),
-
-                  ],
+                Text("Max Fare: ₹${_maxFare.round()}"),
+                Slider(
+                  value: _maxFare,
+                  min: 50,
+                  max: 1000,
+                  divisions: 19,
+                  label: '₹${_maxFare.round()}',
+                  onChanged: (val) => setState(() => _maxFare = val),
                 ),
                 SwitchListTile(
                   title: const Text("Verified Bikers Only"),
@@ -309,11 +194,13 @@ class _FindRidePageState extends State<FindRidePage> {
                 const SizedBox(height: 20),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.search),
-                  onPressed: () {
+                  onPressed: ()async {
+                     User? usercred=FirebaseAuth.instance.currentUser;
+                List<Map<String,dynamic>>? list=await GetRidesOfUser.getRides();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SearchResultsPage(),
+                        builder: (context) =>SearchResultsPage(list),
                       ),
                     );
                   },
@@ -327,91 +214,37 @@ class _FindRidePageState extends State<FindRidePage> {
                   label: const Text(
                     "Search Ride",
                     style: TextStyle(color: Colors.black),
-
-                  ),
-                ],
-              ),
-            ),
-            SwitchListTile(
-              title: const Text("Verified Bikers Only"),
-              value: _verifiedOnly,
-              onChanged: (val) => setState(() => _verifiedOnly = val),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SearchResultsPage(),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                minimumSize: const Size(double.infinity, 50),
-              ),
-
-              child: const Text("Search Ride",style: TextStyle(fontSize: 16,color: Colors.white),),
-
-              child: const Text("Search Ride",style: TextStyle(color: Colors.black),),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AvailableRidesPage(),
-
                   ),
                 ),
                 const SizedBox(height: 12),
                 OutlinedButton.icon(
                   icon: const Icon(Icons.list_alt),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            const AvailableRidesPage(),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          const begin = Offset(1.0, 0.0); // from right
-                          const end = Offset.zero;
-                          const curve = Curves.easeInOut;
-
-                final tween = Tween(
-                  begin: begin,
-                  end: end,
-                ).chain(CurveTween(curve: curve));
-
-                return SlideTransition(
-                  position: animation.drive(tween),
-                  child: child,
+                  onPressed: ()async {
+                     User? usercred=FirebaseAuth.instance.currentUser;
+                List<Map<String,dynamic>>? list=await GetRidesOfUser.getRides();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AvailableRidesPage(list),
+                  ),
                 );
-              },
-              transitionDuration: const Duration(milliseconds: 300),
+                  },
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: Colors.orange.shade100,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: const BorderSide(color: Colors.orange),
+                    ),
+                    foregroundColor: Colors.black,
+                  ),
+                  label: const Text("View Available Rides"),
+                ),
+              ],
             ),
-          );
-        },
-        style: OutlinedButton.styleFrom(
-          minimumSize: const Size(double.infinity, 50),
-          backgroundColor: Colors.orange.shade100,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(color: Colors.orange),
           ),
-          foregroundColor: Colors.black,
         ),
       ),
-    ],
-            )
-          
-  )
-        )
-        )
     );
   }
 }
