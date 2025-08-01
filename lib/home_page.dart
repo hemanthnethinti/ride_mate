@@ -95,4 +95,151 @@ class _MyHomeState extends State<MyHome> {
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    RideSearchDetails rideData = widget.rideDetails ??
+        RideSearchDetails(
+          from: "Coimbator",
+          to: "Munnar",
+          date: DateTime.now(),
+          time: const TimeOfDay(hour: 10, minute: 0),
+          genderPref: "Any",
+          maxFare: 500,
+          seats: 1,
+          verifiedOnly: false,
+        );
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      drawer: AppDrawer(
+        userName: widget.userName,
+        userEmail: widget.userEmail,
+        userPhone: widget.userPhone,
+      ),
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        title: const Text(
+          'Ride Mate',
+          style: TextStyle(
+            fontSize: 30,
+            color: Color(0xFFA34820),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          const SizedBox(width: 16),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TravelerDetails(
+                    userName: widget.userName,
+                    rideDetails: rideData,
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(FontAwesomeIcons.bell, size: 27),
+          ),
+          const SizedBox(width: 16),
+        ],
+        backgroundColor: Colors.orange,
+      ),
+
+body: Builder(
+  builder: (context) {
+    if (_selectedIndex == 0) {
+      return Padding(
+        padding: const EdgeInsets.all(14.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text(
+                'What are you\nLooking for?',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            _buildRideOption(
+              title: "Offer A Ride",
+              subtitle: "I need to fill empty seats",
+              imageUrl:
+                  "https://www.shutterstock.com/image-vector/happy-couple-young-people-rides-600nw-1619620189.jpg",
+              buttonText: "Offer A Ride",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PostRidePage()),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            _buildRideOption(
+              title: "Find A Ride",
+              subtitle: "I need a ride",
+              imageUrl:
+                  "https://png.pngtree.com/png-vector/20221129/ourmid/pngtree-illustration-of-a-vector-icon-for-a-ridesharing-app-or-taxi-cab-app-vector-png-image_42258176.jpg",
+              buttonText: "Need A Ride",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FindRidePage()),
+                );
+              },
+            ),
+          ],
+        ),
+      );
+    } else if (_selectedIndex == 1) {
+      return Center(child: Text("My posts (Coming Soon)"));
+    } else {
+      return const Center(child: Text("My Rides (Coming Soon)"));
+    }
+  },
+),
+
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
+        onTap: (int index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+
+           if (index == 1) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyPosts()),
+    );
+  } else if (index == 2) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyRides(list: request_list)),
+    );
+  }
+
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.post_add),
+            label: 'My Posts',
+            
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'My Rides'),
+        ],
+      ),
+      );
+    
+    
+  }
 }
+
