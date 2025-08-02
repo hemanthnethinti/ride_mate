@@ -192,92 +192,219 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Form(
-            key: _key,
-            child: Column(
-              children: [
-                const Text('Login',
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 40),
+      appBar: AppBar(
+        title: const Text(
+          'Welcome Back',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.orange,
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _key,
+              child: Column(
+                children: [
+                  // Logo or App Icon
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.orange,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 10,
+                          color: Colors.orange,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.directions_car,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  
+                  const Text(
+                    'Sign In to Your Account',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Enter your credentials to continue',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 40),
 
-                
-                CustomTextFeild(
-                  label: 'Email',
-                  pIcon: const Icon(Icons.mail),
-                  controller: _email,
-                  validate: (v) =>
-                      v == null || v.isEmpty ? 'Enter email' : null,
-                ),
-                const SizedBox(height: 15),
+                  // Email Field
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 4,
+                          color: Colors.orange,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: CustomTextFeild(
+                      label: 'Email',
+                      pIcon: const Icon(Icons.mail, color: Colors.orange),
+                      controller: _email,
+                      validate: (v) =>
+                          v == null || v.isEmpty ? 'Enter email' : null,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
 
-               
-                CustomTextFeild(
-                  label: 'Password',
-                  pIcon: const Icon(Icons.lock),
-                  controller: _pass,
-                  isPassword: true,
-                  validate: (v) =>
-                      v == null || v.isEmpty ? 'Enter password' : null,
-                ),
-                const SizedBox(height: 10),
+                  // Password Field
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 4,
+                          color: Colors.orange,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: CustomTextFeild(
+                      label: 'Password',
+                      pIcon: const Icon(Icons.lock, color: Colors.orange),
+                      controller: _pass,
+                      isPassword: true,
+                      validate: (v) =>
+                          v == null || v.isEmpty ? 'Enter password' : null,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
 
-                
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: InkWell(
-                      onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => ForgotPassword())),
-                      child: const Text('Forgot Password?',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                ),
-                const SizedBox(height: 20),
-
-                
-                ElevatedButton(
-                  onPressed: () {
-                    if (_key.currentState!.validate()) login();
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0D2B45),
-                      minimumSize: const Size(double.infinity, 60)),
-                  child: _isloading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Login',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
-                ),
-                const SizedBox(height: 15),
-
-                
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Don't have an account?"),
-                    const SizedBox(width: 5),
-                    InkWell(
-                      onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const SignupPage())),
-                      child: const Text('Sign Up',
+                  // Forgot Password
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => ForgotPassword())),
+                        child: const Text(
+                          'Forgot Password?',
                           style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold)),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 20),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
+                        )),
+                  ),
+                  const SizedBox(height: 30),
 
-                
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _social(iconList[0], signInWithGoogle),
-                    _social(iconList[1], signInWithFacebook),
-                    _social(iconList[2], signInWithMicrosoft),
-                  ],
-                )
-              ],
+                  // Login Button
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_key.currentState!.validate()) login();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 60),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 3,
+                    ),
+                    child: _isloading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          )
+                        : const Text(
+                            'Sign In',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Divider
+                  Row(
+                    children: [
+                      Expanded(child: Divider(color: Colors.grey[400])),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          'Or continue with',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Expanded(child: Divider(color: Colors.grey[400])),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Social Login Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _social(iconList[0], signInWithGoogle),
+                      _social(iconList[1], signInWithFacebook),
+                      _social(iconList[2], signInWithMicrosoft),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Sign Up Link
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Don't have an account? ",
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const SignupPage())),
+                          child: const Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -287,12 +414,27 @@ class _LoginPageState extends State<LoginPage> {
 
 
   Widget _social(IconData icon, VoidCallback onTap) => Container(
-        height: 50,
-        width: 50,
-        margin: const EdgeInsets.symmetric(horizontal: 8),
+        height: 60,
+        width: 80,
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(8)),
-        child: IconButton(onPressed: onTap, icon: Icon(icon)),
+          color: Colors.white,
+          border: Border.all(color: Colors.orange, width: 2),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: const [
+            BoxShadow(
+              blurRadius: 4,
+              color: Colors.orange,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: IconButton(
+          onPressed: onTap,
+          icon: Icon(
+            icon,
+            color: Colors.orange,
+            size: 24,
+          ),
+        ),
       );
 }

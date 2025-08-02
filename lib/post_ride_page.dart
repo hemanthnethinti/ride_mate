@@ -64,7 +64,7 @@ class _PostRidePageState extends State<PostRidePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           "Map Your Route",

@@ -21,7 +21,6 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
       const ScreenCoordinate(x: 200, y: 300), // Adjust if needed
     );
     _selectedLatLng = screenCenter;
-
     try {
       final placemarks = await placemarkFromCoordinates(
         screenCenter.latitude,

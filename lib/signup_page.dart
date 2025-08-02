@@ -114,217 +114,428 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Form(
-            key: _key,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Sign Up',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 40),
-                CustomTextFeild(
-                  label: 'Full Name',
-                  pIcon: const Icon(Icons.person),
-                  controller: _name,
-                  validate: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 15),
-                CustomTextFeild(
-                  label: 'Email',
-                  pIcon: const Icon(Icons.email),
-                  controller: _email,
-                  validate: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    } else if (!value.contains('@')) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 15),
-                TextFormField(
-                  controller: _phone,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                       FilteringTextInputFormatter.digitsOnly, 
-                       LengthLimitingTextInputFormatter(10),   
-                   ],
-                  decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.phone, color: Colors.black),
-                  labelText: 'Phone Number',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
+      appBar: AppBar(
+        title: const Text(
+          'Create Account',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.orange,
+        leading: const BackButton(),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _key,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Logo or App Icon
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.orange,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 10,
+                          color: Colors.orange,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.person_add,
+                      size: 50,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                   validator: (value) {
-                     if (value == null || value.isEmpty) {
-                        return 'Please enter your phone number';
-                    } else if (value.length != 10) {
-                       return 'Phone number must be exactly 10 digits';
-                    }
-                    return null;
-                  },
-                ),
+                  const SizedBox(height: 30),
+                  
+                  const Text(
+                    'Join RideMate Today',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Create your account to get started',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 40),
 
-
-              const SizedBox(height: 15),
-                CustomTextFeild(
-                  label: 'Password',
-                  pIcon: const Icon(Icons.lock),
-                  controller: _pass,
-                  isPassword: true,
-                  validate: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a new password';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 15),
-                CustomTextFeild(
-                  label: 'Confirm Password',
-                  pIcon: const Icon(Icons.lock),
-                  controller: _repass,
-                  isPassword: true,
-                  validate: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
-                    } else if (_pass.text != _repass.text) {
-                      return "Passwords do not match";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: isSelected,
-                      onChanged: (val) {
-                        setState(() {
-                          isSelected = val!;
-                        });
+                  // Full Name Field
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 4,
+                          color: Colors.orange,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: CustomTextFeild(
+                      label: 'Full Name',
+                      pIcon: const Icon(Icons.person, color: Colors.orange),
+                      controller: _name,
+                      validate: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your name';
+                        }
+                        return null;
                       },
                     ),
-                    const Text('I agree to the'),
-                    InkWell(
-                      onTap: () async {
-                        final accepted = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const TermsConditions(),
-                          ),
-                        );
+                  ),
+                  const SizedBox(height: 20),
 
-                        if (accepted == true) {
-                          setState(() {
-                            isSelected = true;
-                          });
+                  // Email Field
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 4,
+                          color: Colors.orange,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: CustomTextFeild(
+                      label: 'Email',
+                      pIcon: const Icon(Icons.email, color: Colors.orange),
+                      controller: _email,
+                      validate: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        } else if (!value.contains('@')) {
+                          return 'Please enter a valid email';
                         }
+                        return null;
                       },
-                      child: const Text(
-                        ' Terms and Conditions',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Phone Field
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 4,
+                          color: Colors.orange,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextFormField(
+                      controller: _phone,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                           FilteringTextInputFormatter.digitsOnly, 
+                           LengthLimitingTextInputFormatter(10),   
+                       ],
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.phone, color: Colors.orange),
+                        labelText: 'Phone Number',
+                        labelStyle: TextStyle(color: Colors.grey[600]),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey[300]!),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.orange, width: 2),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey[300]!),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.red, width: 1),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.red, width: 2),
                         ),
                       ),
+                       validator: (value) {
+                         if (value == null || value.isEmpty) {
+                            return 'Please enter your phone number';
+                        } else if (value.length != 10) {
+                           return 'Phone number must be exactly 10 digits';
+                        }
+                        return null;
+                      },
                     ),
-                  ],
-                ),
-                const SizedBox(height: 25),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_key.currentState!.validate()) {
-                      if (!isSelected) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                                Text('You must accept Terms and Conditions'),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Password Field
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 4,
+                          color: Colors.orange,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: CustomTextFeild(
+                      label: 'Password',
+                      pIcon: const Icon(Icons.lock, color: Colors.orange),
+                      controller: _pass,
+                      isPassword: true,
+                      validate: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a new password';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Confirm Password Field
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 4,
+                          color: Colors.orange,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: CustomTextFeild(
+                      label: 'Confirm Password',
+                      pIcon: const Icon(Icons.lock_outline, color: Colors.orange),
+                      controller: _repass,
+                      isPassword: true,
+                      validate: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        } else if (_pass.text != _repass.text) {
+                          return "Passwords do not match";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Terms and Conditions
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[200]!),
+                    ),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: isSelected,
+                          onChanged: (val) {
+                            setState(() {
+                              isSelected = val!;
+                            });
+                          },
+                          activeColor: Colors.orange,
+                        ),
+                        Expanded(
+                          child: Wrap(
+                            children: [
+                              const Text('I agree to the '),
+                              InkWell(
+                                onTap: () async {
+                                  final accepted = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const TermsConditions(),
+                                    ),
+                                  );
+
+                                  if (accepted == true) {
+                                    setState(() {
+                                      isSelected = true;
+                                    });
+                                  }
+                                },
+                                child: const Text(
+                                  'Terms and Conditions',
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        );
-                        return;
-                      }
-                      debugPrint('Full Name: ${_name.text}');
-                      debugPrint('Email: ${_email.text}');
-                      debugPrint('Password: ${_pass.text}');
-                      debugPrint('Confirm Password: ${_repass.text}');
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const OtpVerification(),
-                      //   ),
-                      // );
-                      reg();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0D2B45),
-                    minimumSize: const Size(double.infinity, 60),
-                  ),
-                  child: _isloading?CircularProgressIndicator():
-                  const Text(
-                    'Sign Up',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Already have an account?"),
-                    const SizedBox(width: 5),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
-                        );
-                      },
-                      child: const Text(
-                        'Login here',
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 25),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(iconList.length, (index) {
-                    return InkWell(
-                      onTap: () {
-                        debugPrint('Tapped on ${iconList[index]}');
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 50,
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Sign Up Button
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_key.currentState!.validate()) {
+                        if (!isSelected) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('You must accept Terms and Conditions'),
+                              backgroundColor: Colors.red,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+                        debugPrint('Full Name: ${_name.text}');
+                        debugPrint('Email: ${_email.text}');
+                        debugPrint('Password: ${_pass.text}');
+                        debugPrint('Confirm Password: ${_repass.text}');
+                        reg();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 60),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 3,
+                    ),
+                    child: _isloading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          )
+                        : const Text(
+                            'Create Account',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Divider
+                  Row(
+                    children: [
+                      Expanded(child: Divider(color: Colors.grey[400])),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          'Or sign up with',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Expanded(child: Divider(color: Colors.grey[400])),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Social Login Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(iconList.length, (index) {
+                      return Container(
+                        height: 60,
+                        width: 80,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.orange, width: 2),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 4,
+                              color: Colors.orange,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
                         ),
-                        child: Icon(iconList[index], size: 25),
-                      ),
-                    );
-                  }),
-                ),
-              ],
+                        child: IconButton(
+                          onPressed: () {
+                            debugPrint('Tapped on ${iconList[index]}');
+                          },
+                          icon: Icon(
+                            iconList[index],
+                            color: Colors.orange,
+                            size: 24,
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Login Link
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Already have an account? ",
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()),
+                            );
+                          },
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

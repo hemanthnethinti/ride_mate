@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ride_mate/post_ride_page.dart';
 
 class MyPosts extends StatefulWidget {
   const MyPosts({super.key});
@@ -135,7 +136,7 @@ class _MyPostsState extends State<MyPosts> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>PostRidePage())),
                     icon: const Icon(Icons.add),
                     label: const Text('Create Post'),
                     style: ElevatedButton.styleFrom(

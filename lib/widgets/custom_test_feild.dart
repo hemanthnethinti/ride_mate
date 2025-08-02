@@ -33,6 +33,7 @@ class _CustomTextFeildState extends State<CustomTextFeild> {
         validator:widget.validate ,
         decoration: InputDecoration(
           labelText: widget.label,
+          labelStyle: TextStyle(color: Colors.grey[600]),
           prefixIcon: widget.pIcon,
           suffixIcon: Visibility(
             visible: widget.isPassword,
@@ -44,11 +45,29 @@ class _CustomTextFeildState extends State<CustomTextFeild> {
               },
               icon: Icon(
                 _obscureText ? Icons.visibility_off : Icons.visibility,
+                color: Colors.orange,
               ),
             ),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[300]!),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.orange, width: 2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[300]!),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.red, width: 1),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.red, width: 2),
           ),
         ),
       );
