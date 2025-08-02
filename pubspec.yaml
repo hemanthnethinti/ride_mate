@@ -66,6 +66,11 @@ flutter:
 
   assets:
     - assets/scooter.json
+    - assets/car_1.jpg
+    - assets/car_2.jpg
+    - assets/car_3.jpg
+    - assets/image.png
+    
 
   
 
