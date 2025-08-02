@@ -3,10 +3,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ride_mate/rider_details_page.dart';
 
-class AvailableRidesPage extends StatelessWidget {
-  List<Map<String,dynamic>>? listlen;
-  AvailableRidesPage(this.listlen,{super.key});
+class AvailableRidesPage extends StatefulWidget {
+  final List<Map<String,dynamic>>? listlen;
+  const AvailableRidesPage(this.listlen,{super.key});
+
+  @override
+  State<AvailableRidesPage> createState() => _AvailableRidesPageState();
+}
+
+class _AvailableRidesPageState extends State<AvailableRidesPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -146,18 +153,23 @@ class AvailableRidesPage extends StatelessWidget {
     ];
 
    return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Available Rides"),
+        title: const Text(
+          "Available Rides",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.orange,
+        leading: const BackButton(),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('user').snapshots(),
          builder: (context,snapshot){
       return ListView.builder(
         padding: const EdgeInsets.all(12),
-        itemCount: listlen!.length,
+        itemCount: widget.listlen!.length,
         itemBuilder: (context, index) {
-          final ride = listlen![index];
+          final ride = widget.listlen![index];
           return FutureBuilder<DocumentSnapshot>(
             future: FirebaseFirestore.instance.collection('user').doc(ride['userid']).get(),
             builder: (context, userSnapshot) {
@@ -168,6 +180,12 @@ class AvailableRidesPage extends StatelessWidget {
                 return const Text('User info not available');
               }
               final userData = userSnapshot.data!.data() as Map<String, dynamic>;
+              
+              // Check if current user has already requested this ride
+              final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+              final hasRequested = ride['requests'] != null && 
+                  (ride['requests'] as List).contains(currentUserId);
+              
               return Card(
                 color: const Color.fromARGB(255, 244, 239, 171),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -226,27 +244,33 @@ class AvailableRidesPage extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
-                      onPressed: () async{
-                         final postsnap = await FirebaseFirestore.instance
-                      .collection('user')
-                      .doc(ride['userid'])
-                      .collection('posts')
-                      .doc(ride['doc']) // You may need to specify the correct post document ID here
-                      .update({
-                        'requests': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid])
-                      });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                         
-                          SnackBar(content: Text("Request has been sent to ${userData['name']??" "}")),
+                      onPressed: hasRequested ? null : () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RiderDetailsPage(
+                              ride: ride,
+                              userData: userData,
+                            ),
+                          ),
                         );
+                        
+                        // Refresh the page if a request was sent
+                        if (result == true) {
+                          setState(() {});
+                        }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: hasRequested ? Colors.grey : Colors.orange,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                      child: const Text(
-                        "Request a ride",
-                        style: TextStyle(color: Colors.black),
+                      child: Text(
+                        hasRequested ? "Requested" : "View Details",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),

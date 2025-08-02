@@ -45,13 +45,14 @@ class _MyHomeState extends State<MyHome> {
     required VoidCallback onTap,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.orange.withOpacity(0.3),
             spreadRadius: 3,
             blurRadius: 10,
             offset: const Offset(0, 5),
@@ -59,50 +60,81 @@ class _MyHomeState extends State<MyHome> {
         ],
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 5),
-                    Text(subtitle, style: const TextStyle(fontSize: 16)),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Container(
-                  constraints: const BoxConstraints(maxHeight: 150, maxWidth: 130),
-                  child: Image.network(
-                    imageUrl, 
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.image_not_supported, size: 80, color: Colors.grey);
-                    },
+          Expanded(
+            flex: 3,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title, 
+                        style: const TextStyle(
+                          fontSize: 24, 
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        subtitle, 
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    constraints: const BoxConstraints(maxHeight: 120),
+                    child: Image.network(
+                      imageUrl, 
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.directions_car, 
+                          size: 80, 
+                          color: Colors.orange,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: onTap,
               style: ElevatedButton.styleFrom(
-                elevation: 0,
+                elevation: 3,
                 backgroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                minimumSize: const Size(double.infinity, 50),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                minimumSize: const Size(double.infinity, 56),
               ),
-              child: Text(buttonText, style: const TextStyle(color: Colors.white, fontSize: 16)),
+              child: Text(
+                buttonText, 
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],
@@ -166,12 +198,12 @@ body: Builder(
   builder: (context) {
     if (_selectedIndex == 0) {
       return Padding(
-        padding: const EdgeInsets.all(14.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.all(12.0),
+              padding: EdgeInsets.symmetric(vertical: 12.0),
               child: Text(
                 'What are you\nLooking for?',
                 style: TextStyle(
@@ -181,34 +213,39 @@ body: Builder(
                 ),
               ),
             ),
-            const SizedBox(height: 30),
-            _buildRideOption(
-              title: "Offer A Ride",
-              subtitle: "I need to fill empty seats",
-              imageUrl:
-                  "https://www.shutterstock.com/image-vector/happy-couple-young-people-rides-600nw-1619620189.jpg",
-              buttonText: "Offer A Ride",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PostRidePage()),
-                );
-              },
-            ),
             const SizedBox(height: 20),
-            _buildRideOption(
-              title: "Find A Ride",
-              subtitle: "I need a ride",
-              imageUrl:
-                  "https://png.pngtree.com/png-vector/20221129/ourmid/pngtree-illustration-of-a-vector-icon-for-a-ridesharing-app-or-taxi-cab-app-vector-png-image_42258176.jpg",
-              buttonText: "Need A Ride",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FindRidePage()),
-                );
-              },
+            Expanded(
+              child: _buildRideOption(
+                title: "Offer A Ride",
+                subtitle: "I need to fill empty seats",
+                imageUrl:
+                    "https://www.shutterstock.com/image-vector/happy-couple-young-people-rides-600nw-1619620189.jpg",
+                buttonText: "Offer A Ride",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PostRidePage()),
+                  );
+                },
+              ),
             ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: _buildRideOption(
+                title: "Find A Ride",
+                subtitle: "I need a ride",
+                imageUrl:
+                    "https://png.pngtree.com/png-vector/20221129/ourmid/pngtree-illustration-of-a-vector-icon-for-a-ridesharing-app-or-taxi-cab-app-vector-png-image_42258176.jpg",
+                buttonText: "Need A Ride",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const FindRidePage()),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       );

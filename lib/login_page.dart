@@ -30,11 +30,11 @@ class _LoginPageState extends State<LoginPage> {
   Future<Map<String, String>> getUserDetails(String uid) async {
     try {
       final doc =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+          await FirebaseFirestore.instance.collection('user').doc(uid).get();
 
       if (doc.exists) {
         return {
-          'userName': doc[''] ?? '',
+          'userName': doc['name'] ?? '',
           'userEmail': doc['email'] ?? '',
           'userPhone': doc['phone'] ?? '',
         };
@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print("Error fetching user details: $e");
     }
-    return {'userName': 'Arshiya Mohammed', 'userEmail': '', 'userPhone': ''};
+    return {'userName': 'User', 'userEmail': '', 'userPhone': ''};
   }
 
   
@@ -126,7 +126,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
- 
   Future<void> signInWithFacebook() async {
     try {
       final fbProvider = FacebookAuthProvider();
@@ -157,7 +156,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  
   Future<void> signInWithMicrosoft() async {
     try {
       final msProvider = MicrosoftAuthProvider();
